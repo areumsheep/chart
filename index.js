@@ -17,7 +17,7 @@ class LineChart {
     this.chartHeight = this.canvasHeight - XAXIS_PADDING - TOP_PADDING - 15;
 
     this.xFormatWidth = this.ctx.measureText(EX_TEXT).width;
-    this.setTime();
+    this.data = [];
     this.drawChart();
   }
 
@@ -44,9 +44,19 @@ class LineChart {
 
   // 차트를 그리는 함수
   drawChart = () => {
-    const { ctx, chartWidth, chartHeight, startTime, endTime, xTimeInterval } =
-      this;
+    const {
+      ctx,
+      canvasWidth,
+      canvasHeight,
+      chartWidth,
+      chartHeight,
+      startTime,
+      endTime,
+      xTimeInterval,
+    } = this;
 
+    this.setTime();
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.beginPath();
     ctx.moveTo(YAXIS_PADDING, TOP_PADDING);
 
@@ -76,12 +86,33 @@ class LineChart {
       ctx.fillText(text, xPoint, chartHeight + TOP_PADDING + 10);
       currentTime += xTimeInterval;
     }
+
+    this.data.forEach((datum, index) => {
+      const [time, value] = datum;
+      const xPoint = ((time - startTime) / DURATION) * chartWidth;
+      const yPoint = chartHeight - (value / MAX_VALUE) * this.chartHeight;
+
+      if (!index) {
+        ctx.moveTo(xPoint, yPoint);
+      } else {
+        ctx.lineTo(xPoint, yPoint);
+      }
+    });
+
+    ctx.stroke();
+    window.requestAnimationFrame(this.drawChart);
   };
 
   // 데이터를 갱신하는 함수
-  updateData = () => {};
+  updateData = (data) => {
+    this.data.push(data);
+  };
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  new LineChart('lineChart');
+  const lineChart = new LineChart('lineChart');
+
+  window.setInterval(() => {
+    lineChart.updateData([Date.now(), Math.random() * 100]);
+  }, 1000);
 });
