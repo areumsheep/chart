@@ -23,7 +23,7 @@ class LineChart {
 
   // 시간을 실시간으로 세팅하는 함수
   setTime = () => {
-    this.endTime = Date.now();
+    this.endTime = Date.now() - 1000;
     this.startTime = this.endTime - DURATION;
     this.setXInterval();
   };
@@ -92,28 +92,43 @@ class LineChart {
       currentTime += xTimeInterval;
     }
 
-    ctx.beginPath();
-    this.data.forEach((datum, index) => {
-      const [time, value] = datum;
-      const xPoint = ((time - startTime) / DURATION) * chartWidth;
-      const yPoint =
-        TOP_PADDING + chartHeight - (value / MAX_VALUE) * this.chartHeight;
+    this.data.forEach((data, i) => {
+      ctx.beginPath();
+      data.forEach((datum, index) => {
+        const [time, value] = datum;
+        const xPoint =
+          YAXIS_PADDING + ((time - startTime) / DURATION) * chartWidth;
+        const yPoint =
+          TOP_PADDING + chartHeight - (value / MAX_VALUE) * this.chartHeight;
 
-      if (!index) {
-        ctx.moveTo(xPoint, yPoint);
-      } else {
-        ctx.lineTo(xPoint, yPoint);
+        if (!index) {
+          ctx.moveTo(xPoint, yPoint);
+        } else {
+          ctx.lineTo(xPoint, yPoint);
+        }
+      });
+
+      switch (i) {
+        case 0:
+          ctx.strokeStyle = 'red';
+          break;
+        case 1:
+          ctx.strokeStyle = 'blue';
+          break;
       }
-    });
 
-    ctx.stroke();
+      ctx.stroke();
+    });
     ctx.restore();
     window.requestAnimationFrame(this.drawChart);
   };
 
   // 데이터를 갱신하는 함수
   updateData = (data) => {
-    this.data.push(data);
+    data.forEach((datum, i) => {
+      if (!Array.isArray(this.data[i])) this.data[i] = [];
+      this.data[i].push(datum);
+    });
   };
 }
 
@@ -121,6 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const lineChart = new LineChart('lineChart');
 
   window.setInterval(() => {
-    lineChart.updateData([Date.now(), Math.random() * 100]);
+    lineChart.updateData([
+      [Date.now(), Math.random() * 100],
+      [Date.now(), Math.random() * 100],
+    ]);
   }, 1000);
 });
