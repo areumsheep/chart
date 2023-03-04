@@ -75,6 +75,11 @@ class LineChart {
     ctx.lineTo(chartWidth, chartHeight + TOP_PADDING);
     ctx.stroke();
 
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(YAXIS_PADDING, 0, chartWidth, canvasHeight);
+    ctx.clip();
+
     let currentTime = startTime - (startTime % xTimeInterval);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -87,10 +92,12 @@ class LineChart {
       currentTime += xTimeInterval;
     }
 
+    ctx.beginPath();
     this.data.forEach((datum, index) => {
       const [time, value] = datum;
       const xPoint = ((time - startTime) / DURATION) * chartWidth;
-      const yPoint = chartHeight - (value / MAX_VALUE) * this.chartHeight;
+      const yPoint =
+        TOP_PADDING + chartHeight - (value / MAX_VALUE) * this.chartHeight;
 
       if (!index) {
         ctx.moveTo(xPoint, yPoint);
@@ -100,6 +107,7 @@ class LineChart {
     });
 
     ctx.stroke();
+    ctx.restore();
     window.requestAnimationFrame(this.drawChart);
   };
 
