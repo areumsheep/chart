@@ -1,6 +1,6 @@
 const XAXIS_PADDING = 10;
 const YAXIS_PADDING = 25;
-const DURATION = 1000 * 30; //30s
+const DURATION = 1000 * 10; //10s
 const MAX_VALUE = 100;
 const Y_TICK_COUNT = 5;
 const TOP_PADDING = 15;
@@ -92,6 +92,8 @@ class LineChart {
       currentTime += xTimeInterval;
     }
 
+    const barWidth = (1000 / DURATION) * chartWidth * 0.65;
+    ctx.lineWidth = 2;
     this.data.forEach((data, i) => {
       ctx.beginPath();
       data.forEach((datum, index) => {
@@ -101,23 +103,35 @@ class LineChart {
         const yPoint =
           TOP_PADDING + chartHeight - (value / MAX_VALUE) * this.chartHeight;
 
-        if (!index) {
-          ctx.moveTo(xPoint, yPoint);
-        } else {
-          ctx.lineTo(xPoint, yPoint);
+        switch (i) {
+          case 0:
+            ctx.rect(
+              xPoint - barWidth / 2,
+              yPoint,
+              barWidth,
+              TOP_PADDING + chartHeight - yPoint
+            );
+            break;
+          case 1:
+            if (!index) {
+              ctx.moveTo(xPoint, yPoint);
+            } else {
+              ctx.lineTo(xPoint, yPoint);
+            }
+            break;
         }
       });
 
       switch (i) {
         case 0:
-          ctx.strokeStyle = 'red';
+          ctx.fillStyle = 'royalBlue';
+          ctx.fill();
           break;
         case 1:
-          ctx.strokeStyle = 'blue';
+          ctx.strokeStyle = 'red';
+          ctx.stroke();
           break;
       }
-
-      ctx.stroke();
     });
     ctx.restore();
     window.requestAnimationFrame(this.drawChart);
