@@ -1,7 +1,7 @@
-import LineChart from './LineChart.js';
+import LineChart from './LineChart';
 
 const $lineChart = document.querySelector('#lineChart') as HTMLCanvasElement;
 
 document.addEventListener('DOMContentLoaded', () => {
-  new LineChart($lineChart);
+  const lineChart = new LineChart($lineChart);
 });
