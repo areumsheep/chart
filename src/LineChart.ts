@@ -44,17 +44,25 @@ class LineChart {
     // X 축 눈금 간격
     const xTickInterval = 60;
 
-    // X 축 시작 시간 (현재 시간에서 가장 가까운 1분 단위로 내림)
-    const startX =
-      Math.floor(Date.now() / (xTickInterval * 1000)) * (xTickInterval * 1000);
+    // X 축 최대 출력 수
+    const xTick = 5;
+
+    const date = new Date();
+    date.setMinutes(date.getMinutes() - (xTick - 1));
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+
+    const fiveMinutesAgo = date.getTime();
 
     // X 축 눈금 그리기
     this.ctx.beginPath();
-    for (let i = 0; i <= 5; i++) {
+    for (let i = 0; i <= xTick; i++) {
       const x =
-        i * xTickInterval - (((Date.now() - startX) / 1000) % xTickInterval);
+        i * xTickInterval -
+        (((Date.now() - fiveMinutesAgo) / 1000) % xTickInterval);
 
-      const time = new Date(startX + x * 1000);
+      const time = new Date(fiveMinutesAgo + x * 1000);
+
       const text = `${time.getHours()}:${time.getMinutes()}`;
 
       this.ctx.textAlign = 'center';
