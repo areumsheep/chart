@@ -58,9 +58,9 @@ class LineChart {
       const text = `${time.getHours()}:${time.getMinutes()}`;
 
       this.ctx.textAlign = 'center';
-      this.ctx.fillText(text, x, this.canvasHeight + 20);
-      this.ctx.moveTo(x, this.canvasHeight);
-      this.ctx.lineTo(x, this.canvasHeight + 10);
+      this.ctx.fillText(text, x * 1.5, this.canvasHeight + 20);
+      this.ctx.moveTo(x * 1.5, this.canvasHeight);
+      this.ctx.lineTo(x * 1.5, this.canvasHeight + 10);
     }
     this.ctx.stroke();
   }
