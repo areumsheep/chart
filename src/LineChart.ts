@@ -3,12 +3,13 @@ import { padLeft } from './utils/string';
 
 const DEFAULT_AXIS_PADDING = 20;
 const DURATION = 1000 * 30;
+const MAX_Y = 100;
 
 class LineChart {
   $canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  canvasWidth: number;
-  canvasHeight: number;
+  chartWidth: number;
+  chartHeight: number;
   startTime!: number;
   endTime!: number;
   xTimeInterval = 5000;
@@ -16,8 +17,8 @@ class LineChart {
   constructor($canvas: HTMLCanvasElement) {
     this.$canvas = $canvas;
     this.ctx = $canvas.getContext('2d')!;
-    this.canvasWidth = $canvas.width - DEFAULT_AXIS_PADDING;
-    this.canvasHeight = $canvas.height - DEFAULT_AXIS_PADDING;
+    this.chartWidth = $canvas.width - DEFAULT_AXIS_PADDING;
+    this.chartHeight = $canvas.height - DEFAULT_AXIS_PADDING;
 
     this.#draw();
   }
@@ -29,15 +30,15 @@ class LineChart {
 
   #drawAxisX() {
     this.ctx.beginPath();
-    this.ctx.moveTo(DEFAULT_AXIS_PADDING, this.canvasHeight);
-    this.ctx.lineTo(this.canvasWidth, this.canvasHeight);
+    this.ctx.moveTo(DEFAULT_AXIS_PADDING, this.chartHeight);
+    this.ctx.lineTo(this.chartWidth, this.chartHeight);
     this.ctx.stroke();
   }
 
   #drawAxisY() {
     this.ctx.beginPath();
     this.ctx.moveTo(DEFAULT_AXIS_PADDING, DEFAULT_AXIS_PADDING);
-    this.ctx.lineTo(DEFAULT_AXIS_PADDING, this.canvasHeight);
+    this.ctx.lineTo(DEFAULT_AXIS_PADDING, this.chartHeight);
     this.ctx.stroke();
   }
 
@@ -69,11 +70,33 @@ class LineChart {
       const text = `${hour}:${minute}`;
 
       this.ctx.textAlign = 'center';
-      this.ctx.fillText(text, x * 1.5, this.canvasHeight + 20);
-      this.ctx.moveTo(x * 1.5, this.canvasHeight);
-      this.ctx.lineTo(x * 1.5, this.canvasHeight + 10);
+      this.ctx.fillText(text, x * 1.5, this.chartHeight + 20);
+      this.ctx.moveTo(x * 1.5, this.chartHeight);
+      this.ctx.lineTo(x * 1.5, this.chartHeight + 10);
     }
     this.ctx.stroke();
+  }
+
+  #drawLabelY() {
+    const yTickInterval = 10;
+
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.textAlign = 'right';
+    for (let i = 0; i <= yTickInterval; i++) {
+      const value = i * yTickInterval;
+      const yPoint =
+        this.chartHeight - (value / MAX_Y) * this.chartHeight * 0.9;
+      this.ctx.fillText(`${value}`, DEFAULT_AXIS_PADDING - 4, yPoint + 3);
+      if (i !== 0) {
+        this.ctx.setLineDash([1, 2]);
+        this.ctx.strokeStyle = '#E3E3E3';
+        this.ctx.moveTo(DEFAULT_AXIS_PADDING, yPoint);
+        this.ctx.lineTo(this.chartWidth, yPoint);
+      }
+    }
+    this.ctx.stroke();
+    this.ctx.restore();
   }
 
   #draw = () => {
@@ -81,9 +104,11 @@ class LineChart {
     this.ctx.clearRect(
       0,
       0,
-      this.canvasWidth + DEFAULT_AXIS_PADDING,
-      this.canvasHeight + DEFAULT_AXIS_PADDING
+      this.chartWidth + DEFAULT_AXIS_PADDING,
+      this.chartHeight + DEFAULT_AXIS_PADDING
     );
+
+    this.#drawLabelY();
 
     this.#drawAxisX();
     this.#drawAxisY();
