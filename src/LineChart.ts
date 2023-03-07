@@ -1,4 +1,5 @@
 import type { Data, Datum } from './types/Data';
+import { padLeft } from './utils/string';
 
 const DEFAULT_AXIS_PADDING = 20;
 const DURATION = 1000 * 30;
@@ -62,8 +63,10 @@ class LineChart {
         (((Date.now() - fiveMinutesAgo) / 1000) % xTickInterval);
 
       const time = new Date(fiveMinutesAgo + x * 1000);
+      const hour = padLeft(`${time.getHours()}`, '0', 2);
+      const minute = padLeft(`${time.getMinutes()}`, '0', 2);
 
-      const text = `${time.getHours()}:${time.getMinutes()}`;
+      const text = `${hour}:${minute}`;
 
       this.ctx.textAlign = 'center';
       this.ctx.fillText(text, x * 1.5, this.canvasHeight + 20);
