@@ -41,17 +41,28 @@ class LineChart {
   }
 
   #drawLabelX() {
-    let currentTime = this.startTime - (this.startTime % this.xTimeInterval);
+    // X 축 눈금 간격
+    const xTickInterval = 60;
 
-    while (currentTime < this.endTime + this.xTimeInterval) {
-      const xPoint =
-        ((currentTime - this.startTime) / DURATION) * this.canvasWidth;
+    // X 축 시작 시간 (현재 시간에서 가장 가까운 1분 단위로 내림)
+    const startX =
+      Math.floor(Date.now() / (xTickInterval * 1000)) * (xTickInterval * 1000);
 
-      const date = new Date(currentTime);
-      const text = `${date.getMinutes()}:${date.getSeconds()}`;
-      this.ctx.fillText(text, xPoint, this.canvasHeight + DEFAULT_AXIS_PADDING);
-      currentTime += this.xTimeInterval;
+    // X 축 눈금 그리기
+    this.ctx.beginPath();
+    for (let i = 0; i <= 5; i++) {
+      const x =
+        i * xTickInterval - (((Date.now() - startX) / 1000) % xTickInterval);
+
+      const time = new Date(startX + x * 1000);
+      const text = `${time.getHours()}:${time.getMinutes()}`;
+
+      this.ctx.textAlign = 'center';
+      this.ctx.fillText(text, x, this.canvasHeight + 20);
+      this.ctx.moveTo(x, this.canvasHeight);
+      this.ctx.lineTo(x, this.canvasHeight + 10);
     }
+    this.ctx.stroke();
   }
 
   #draw = () => {
