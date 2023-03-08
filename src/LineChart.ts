@@ -1,7 +1,7 @@
 import type { Data, Datum } from './types/Data';
 import { padLeft } from './utils/string';
 
-const DEFAULT_AXIS_PADDING = 20;
+const DEFAULT_AXIS_PADDING = 40;
 const DURATION = 1000 * 60;
 const MAX_Y = 100;
 
@@ -18,6 +18,11 @@ class LineChart {
   data: Data = [];
 
   constructor($canvas: HTMLCanvasElement) {
+    const dpr = window.devicePixelRatio;
+
+    $canvas.width = $canvas.width * dpr;
+    $canvas.height = $canvas.height * dpr;
+
     this.$canvas = $canvas;
     this.ctx = $canvas.getContext('2d')!;
     this.chartWidth = $canvas.width - DEFAULT_AXIS_PADDING;
@@ -48,7 +53,6 @@ class LineChart {
   #drawLabelX() {
     const { endTime, startTime, xTimeInterval, chartWidth, chartHeight } = this;
 
-    // X 축 눈금 그리기
     this.ctx.beginPath();
 
     let currentTime = startTime - (startTime % xTimeInterval);
@@ -62,7 +66,8 @@ class LineChart {
       const minute = padLeft(`${date.getMinutes()}`, '0', 2);
       const text = `${hour}:${minute}`;
 
-      this.ctx.fillText(text, xPoint, chartHeight + 8);
+      this.ctx.font = '15px arial';
+      this.ctx.fillText(text, xPoint, chartHeight + 9);
       this.ctx.moveTo(xPoint, this.chartHeight);
       this.ctx.lineTo(xPoint, this.chartHeight + 7);
       currentTime += xTimeInterval;
@@ -81,10 +86,10 @@ class LineChart {
 
       const yPoint =
         this.chartHeight - (value / MAX_Y) * this.chartHeight * 0.9;
-      this.ctx.fillText(`${value}`, DEFAULT_AXIS_PADDING - 4, yPoint - 5);
+      this.ctx.fillText(`${value}`, DEFAULT_AXIS_PADDING - 5, yPoint - 5);
       if (i !== 0) {
         this.ctx.setLineDash([1, 2]);
-        this.ctx.strokeStyle = '#E3E3E3';
+        this.ctx.strokeStyle = '#C9C9C9';
         this.ctx.moveTo(DEFAULT_AXIS_PADDING, yPoint);
         this.ctx.lineTo(this.chartWidth, yPoint);
       }
@@ -96,6 +101,7 @@ class LineChart {
   #drawLineChart = () => {
     const { startTime, chartWidth, chartHeight } = this;
 
+    this.ctx.save();
     this.ctx.beginPath();
     this.data.forEach((datum, index) => {
       const { time, value } = datum;
@@ -106,10 +112,13 @@ class LineChart {
       if (!index) {
         this.ctx.moveTo(xPoint, yPoint);
       } else {
+        this.ctx.strokeStyle = '#1791FF';
+        this.ctx.lineWidth = 2;
         this.ctx.lineTo(xPoint, yPoint);
       }
     });
     this.ctx.stroke();
+    this.ctx.restore();
   };
 
   #draw = () => {
