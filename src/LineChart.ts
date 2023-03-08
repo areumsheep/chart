@@ -1,7 +1,10 @@
 import type { Data, Datum } from './types/Data';
+import type { Point } from './types/LineChart';
 
 import color from './constants/color';
 import { padLeft } from './utils/string';
+import { findNearestPoint } from './utils/point';
+import Pane from './Pane';
 
 const DEFAULT_AXIS_PADDING = 40;
 const DURATION = 1000 * 60;
@@ -18,6 +21,8 @@ class LineChart {
   endTime!: number;
   xTimeInterval = DURATION;
   data: Data = [];
+  dataset: Point[] = [];
+  tooltip: Pane;
 
   constructor($canvas: HTMLCanvasElement) {
     const dpr = window.devicePixelRatio;
@@ -29,6 +34,9 @@ class LineChart {
     this.ctx = $canvas.getContext('2d')!;
     this.chartWidth = $canvas.width - DEFAULT_AXIS_PADDING;
     this.chartHeight = $canvas.height - DEFAULT_AXIS_PADDING;
+
+    this.tooltip = new Pane($canvas, $canvas.width, $canvas.height, 'tooltip');
+    this.tooltip.addMouseMoveEvent(this.#drawTooltip);
 
     this.#draw();
   }
@@ -60,6 +68,7 @@ class LineChart {
     let currentTime = startTime - (startTime % xTimeInterval);
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'top';
+
     while (currentTime < endTime + DURATION * 5) {
       const xPoint = ((currentTime - startTime) / DURATION) * chartWidth * 0.2;
 
@@ -100,16 +109,52 @@ class LineChart {
     this.ctx.restore();
   }
 
+  #drawTooltip = (e: MouseEvent) => {
+    const rect = this.$canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // TODO memoization
+    const nearestPoint = findNearestPoint(mouseX, mouseY, this.dataset);
+    if (nearestPoint === undefined) return;
+
+    const [x, y] = nearestPoint;
+
+    this.tooltip.ctx.beginPath();
+
+    this.tooltip.ctx.save();
+    this.tooltip.ctx.setLineDash([5]);
+    this.tooltip.ctx.strokeStyle = color.darkgray;
+
+    this.tooltip.ctx.moveTo(x, DEFAULT_AXIS_PADDING);
+    this.tooltip.ctx.lineTo(x, this.chartHeight);
+
+    this.tooltip.ctx.moveTo(DEFAULT_AXIS_PADDING, y);
+    this.tooltip.ctx.lineTo(this.chartWidth, y);
+    this.tooltip.ctx.stroke();
+    this.tooltip.ctx.restore();
+
+    const circle = new Path2D();
+    circle.arc(x, y, 4, 0, 2 * Math.PI);
+
+    this.tooltip.ctx.fillStyle = color.darkgray;
+    this.tooltip.ctx.fill(circle);
+  };
+
   #drawLineChart = () => {
     const { startTime, chartWidth, chartHeight } = this;
 
     this.ctx.save();
     this.ctx.beginPath();
+
+    this.dataset = [];
     this.data.forEach((datum, index) => {
       const { time, value } = datum;
 
       const xPoint = ((time - startTime) / DURATION) * chartWidth * 0.2;
       const yPoint = chartHeight - (value / MAX_Y) * this.chartHeight * 0.9;
+
+      this.dataset.push({ x: xPoint, y: yPoint });
 
       if (!index) {
         this.ctx.moveTo(xPoint, yPoint);
