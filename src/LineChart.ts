@@ -1,4 +1,6 @@
 import type { Data, Datum } from './types/Data';
+
+import color from './constants/color';
 import { padLeft } from './utils/string';
 
 const DEFAULT_AXIS_PADDING = 40;
@@ -89,7 +91,7 @@ class LineChart {
       this.ctx.fillText(`${value}`, DEFAULT_AXIS_PADDING - 5, yPoint - 5);
       if (i !== 0) {
         this.ctx.setLineDash([1, 2]);
-        this.ctx.strokeStyle = '#C9C9C9';
+        this.ctx.strokeStyle = color.lightgray;
         this.ctx.moveTo(DEFAULT_AXIS_PADDING, yPoint);
         this.ctx.lineTo(this.chartWidth, yPoint);
       }
@@ -112,7 +114,7 @@ class LineChart {
       if (!index) {
         this.ctx.moveTo(xPoint, yPoint);
       } else {
-        this.ctx.strokeStyle = '#1791FF';
+        this.ctx.strokeStyle = color.blue;
         this.ctx.lineWidth = 2;
         this.ctx.lineTo(xPoint, yPoint);
       }
