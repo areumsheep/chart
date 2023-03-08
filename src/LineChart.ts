@@ -88,7 +88,7 @@ class LineChart {
 
       const yPoint =
         this.chartHeight - (value / MAX_Y) * this.chartHeight * 0.9;
-      this.ctx.fillText(`${value}`, DEFAULT_AXIS_PADDING - 5, yPoint - 5);
+      this.ctx.fillText(`${value}`, DEFAULT_AXIS_PADDING - 5, yPoint - 10);
       if (i !== 0) {
         this.ctx.setLineDash([1, 2]);
         this.ctx.strokeStyle = color.lightgray;
@@ -123,6 +123,17 @@ class LineChart {
     this.ctx.restore();
   };
 
+  #drawClip = () => {
+    const realTimeChart = new Path2D();
+    realTimeChart.rect(
+      DEFAULT_AXIS_PADDING,
+      0,
+      this.chartWidth,
+      this.$canvas.height
+    );
+    this.ctx.clip(realTimeChart, 'evenodd');
+  };
+
   #draw = () => {
     this.#setTime();
     this.ctx.clearRect(
@@ -134,6 +145,8 @@ class LineChart {
 
     this.#drawLabelX();
     this.#drawLabelY();
+
+    this.#drawClip();
 
     this.#drawAxisX();
     this.#drawAxisY();
