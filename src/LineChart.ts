@@ -2,15 +2,10 @@ import type { Data, Datum } from './types/Data';
 import type { Point } from './types/LineChart';
 
 import COLOR from './constants/color';
+import CHART from './constants/CHART';
 
 import { padLeft } from './utils/string';
 import CrossHair from './CrossHair';
-
-const DEFAULT_AXIS_PADDING = 40;
-const DURATION = 1000 * 60;
-const MAX_Y = 100;
-
-const xTick = 5;
 
 class LineChart {
   $canvas: HTMLCanvasElement;
@@ -19,7 +14,7 @@ class LineChart {
   chartHeight: number;
   startTime!: number;
   endTime!: number;
-  xTimeInterval = DURATION;
+  xTimeInterval = CHART.DURATION;
   data: Data = [];
   dataset: Point[] = [];
   crossHair: CrossHair;
@@ -32,8 +27,8 @@ class LineChart {
 
     this.$canvas = $canvas;
     this.ctx = $canvas.getContext('2d')!;
-    this.chartWidth = $canvas.width - DEFAULT_AXIS_PADDING;
-    this.chartHeight = $canvas.height - DEFAULT_AXIS_PADDING;
+    this.chartWidth = $canvas.width - CHART.PADDING;
+    this.chartHeight = $canvas.height - CHART.PADDING;
 
     this.crossHair = new CrossHair(
       $canvas,
@@ -47,20 +42,20 @@ class LineChart {
 
   #setTime = () => {
     this.endTime = Date.now();
-    this.startTime = this.endTime - DURATION * xTick;
+    this.startTime = this.endTime - CHART.DURATION * CHART.X.TICK;
   };
 
   #drawAxisX() {
     this.ctx.beginPath();
-    this.ctx.moveTo(DEFAULT_AXIS_PADDING, this.chartHeight);
+    this.ctx.moveTo(CHART.PADDING, this.chartHeight);
     this.ctx.lineTo(this.chartWidth, this.chartHeight);
     this.ctx.stroke();
   }
 
   #drawAxisY() {
     this.ctx.beginPath();
-    this.ctx.moveTo(DEFAULT_AXIS_PADDING, DEFAULT_AXIS_PADDING);
-    this.ctx.lineTo(DEFAULT_AXIS_PADDING, this.chartHeight);
+    this.ctx.moveTo(CHART.PADDING, CHART.PADDING);
+    this.ctx.lineTo(CHART.PADDING, this.chartHeight);
     this.ctx.stroke();
   }
 
@@ -73,8 +68,9 @@ class LineChart {
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'top';
 
-    while (currentTime < endTime + DURATION * 5) {
-      const xPoint = ((currentTime - startTime) / DURATION) * chartWidth * 0.2;
+    while (currentTime < endTime + CHART.DURATION * CHART.X.TICK) {
+      const xPoint =
+        ((currentTime - startTime) / CHART.DURATION) * chartWidth * 0.2;
 
       const date = new Date(currentTime);
       const hour = padLeft(`${date.getHours()}`, '0', 2);
@@ -96,16 +92,17 @@ class LineChart {
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.textAlign = 'right';
-    for (let i = 0; i <= yTickInterval; i++) {
+    for (let i = CHART.Y.MIN; i <= yTickInterval; i++) {
       const value = i * yTickInterval;
 
       const yPoint =
-        this.chartHeight - (value / MAX_Y) * this.chartHeight * 0.9;
-      this.ctx.fillText(`${value}`, DEFAULT_AXIS_PADDING - 5, yPoint - 10);
+        this.chartHeight - (value / CHART.Y.MAX) * this.chartHeight * 0.9;
+      this.ctx.fillText(`${value}`, CHART.PADDING - 5, yPoint - 10);
+
       if (i !== 0) {
         this.ctx.setLineDash([1, 2]);
         this.ctx.strokeStyle = COLOR.lightgray;
-        this.ctx.moveTo(DEFAULT_AXIS_PADDING, yPoint);
+        this.ctx.moveTo(CHART.PADDING, yPoint);
         this.ctx.lineTo(this.chartWidth, yPoint);
       }
     }
@@ -123,8 +120,9 @@ class LineChart {
     this.data.forEach((datum, index) => {
       const { time, value } = datum;
 
-      const xPoint = ((time - startTime) / DURATION) * chartWidth * 0.2;
-      const yPoint = chartHeight - (value / MAX_Y) * this.chartHeight * 0.9;
+      const xPoint = ((time - startTime) / CHART.DURATION) * chartWidth * 0.2;
+      const yPoint =
+        chartHeight - (value / CHART.Y.MAX) * this.chartHeight * 0.9;
 
       dataset.push({ x: xPoint, y: yPoint });
 
@@ -144,12 +142,7 @@ class LineChart {
 
   #drawClip = () => {
     const realTimeChart = new Path2D();
-    realTimeChart.rect(
-      DEFAULT_AXIS_PADDING,
-      0,
-      this.chartWidth,
-      this.$canvas.height
-    );
+    realTimeChart.rect(CHART.PADDING, 0, this.chartWidth, this.$canvas.height);
     this.ctx.clip(realTimeChart, 'evenodd');
   };
 
@@ -158,8 +151,8 @@ class LineChart {
     this.ctx.clearRect(
       0,
       0,
-      this.chartWidth + DEFAULT_AXIS_PADDING,
-      this.chartHeight + DEFAULT_AXIS_PADDING
+      this.chartWidth + CHART.PADDING,
+      this.chartHeight + CHART.PADDING
     );
 
     this.#drawLabelX();
