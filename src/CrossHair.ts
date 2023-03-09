@@ -59,10 +59,10 @@ class CrossHair {
     this.ctx.save();
     this.ctx.setLineDash([5]);
 
-    this.ctx.moveTo(this.xPoint, CHART.DEFAULT_AXIS_PADDING);
+    this.ctx.moveTo(this.xPoint, CHART.PADDING);
     this.ctx.lineTo(this.xPoint, this.chartHeight);
 
-    this.ctx.moveTo(CHART.DEFAULT_AXIS_PADDING, this.yPoint);
+    this.ctx.moveTo(CHART.PADDING, this.yPoint);
     this.ctx.lineTo(this.chartWidth, this.yPoint);
 
     this.ctx.stroke();
