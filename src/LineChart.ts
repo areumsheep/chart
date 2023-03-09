@@ -60,7 +60,7 @@ class LineChart {
   }
 
   #drawLabelX() {
-    const { endTime, startTime, xTimeInterval, chartWidth, chartHeight } = this;
+    const { startTime, xTimeInterval, chartWidth, chartHeight } = this;
 
     this.ctx.beginPath();
 
@@ -68,7 +68,7 @@ class LineChart {
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'top';
 
-    while (currentTime < endTime + CHART.DURATION * CHART.X.TICK) {
+    while (startTime + CHART.DURATION * CHART.X.TICK > currentTime) {
       const xPoint =
         ((currentTime - startTime) / CHART.DURATION) * chartWidth * 0.2;
 
