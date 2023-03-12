@@ -1,7 +1,7 @@
-import BackgroundCanvas from './backgroundCanvas.view';
-import LineChartController from '../controllers/lineChart.controller';
-import { Data } from '../types/Data';
 import LineChartModel from '../models/lineChart.model';
+import LineChartController from '../controllers/lineChart.controller';
+import BackgroundCanvas from './backgroundCanvas.view';
+
 import CanvasDrawHelper from '../utils/canvasDrawHelper';
 
 class LineChartView {

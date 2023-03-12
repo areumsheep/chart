@@ -1,5 +1,3 @@
-import type { Data } from '../types/Data';
-
 import LineChartView from '../views/lineChart.view';
 import LineChartModel from '../models/lineChart.model';
 

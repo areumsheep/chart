@@ -6,22 +6,19 @@ import type { ChartOptions } from './types/LineChart';
 import { Datum } from './types/Data';
 
 class LineChart {
-  lineChartView: LineChartView;
-  lineChartModel: LineChartModel;
-  lineChartController: LineChartController;
+  view: LineChartView;
+  model: LineChartModel;
+  controller: LineChartController;
 
   constructor(canvas: HTMLCanvasElement, options: ChartOptions) {
-    this.lineChartView = new LineChartView(canvas);
-    this.lineChartModel = new LineChartModel(options);
+    this.view = new LineChartView(canvas);
+    this.model = new LineChartModel(options);
 
-    this.lineChartController = new LineChartController(
-      this.lineChartView,
-      this.lineChartModel
-    );
+    this.controller = new LineChartController(this.view, this.model);
   }
 
   initData = (datum: Datum) => {
-    this.lineChartModel.getInitialData(datum);
+    this.model.getInitialData(datum);
   };
 }
 
