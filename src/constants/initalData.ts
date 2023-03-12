@@ -8,8 +8,9 @@ export const initialData: ChartOptions = {
     h: 300,
   },
   axisX: {
+    format: 'HH:mm',
     range: {
-      start: Date.now(),
+      start: Date.now() - 60 * 5 * 1000,
       end: Date.now(),
     },
   },
@@ -19,7 +20,7 @@ export const initialData: ChartOptions = {
       end: 100,
     },
   },
-  tics: {
+  ticks: {
     x: 60 * 1000,
     y: 10,
   },

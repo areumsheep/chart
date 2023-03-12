@@ -10,4 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
     time: Date.now(),
     value: Math.random() * 100,
   });
+
+  window.setInterval(() => {
+    lineChart.updateData({
+      time: Date.now(),
+      value: Math.random() * 100,
+    });
+  }, 5000);
 });

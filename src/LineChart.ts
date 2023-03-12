@@ -21,6 +21,11 @@ class LineChart {
     this.model.getInitialData(datum);
     this.controller.updateModel();
   };
+
+  updateData = (datum: Datum) => {
+    this.model.getUpdateData(datum);
+    this.controller.updateModel();
+  };
 }
 
 export default LineChart;

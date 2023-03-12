@@ -1,15 +1,17 @@
 export interface ChartOptions {
   rect: Rect;
   axisX: {
+    format?: string;
     range: AxisRange;
   };
   axisY: {
+    format?: string;
     range: AxisRange;
   };
-  tics: Point;
+  ticks: Point;
 }
 
-interface AxisRange {
+export interface AxisRange {
   start: number;
   end: number;
 }
