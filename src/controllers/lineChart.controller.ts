@@ -10,7 +10,6 @@ class LineChartController {
     this.model = model;
 
     this.view.setController(this);
-    this.model.setController(this);
   }
 
   updateModel = () => {

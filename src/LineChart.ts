@@ -3,7 +3,7 @@ import LineChartModel from './models/lineChart.model';
 import LineChartController from './controllers/lineChart.controller';
 
 import type { ChartOptions } from './types/LineChart';
-import { Datum } from './types/Data';
+import type { Datum } from './types/Data';
 
 class LineChart {
   view: LineChartView;
@@ -19,6 +19,7 @@ class LineChart {
 
   initData = (datum: Datum) => {
     this.model.getInitialData(datum);
+    this.controller.updateModel();
   };
 }
 
