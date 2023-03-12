@@ -1,12 +1,13 @@
 import LineChart from './LineChart';
+import { initialData } from './constants/initalData';
 
 const $lineChart = document.querySelector('#lineChart') as HTMLCanvasElement;
 
 document.addEventListener('DOMContentLoaded', () => {
-  const lineChart = new LineChart($lineChart);
-  lineChart.getInitialData({ time: Date.now(), value: Math.random() * 100 });
+  const lineChart = new LineChart($lineChart, initialData);
 
-  window.setInterval(() => {
-    lineChart.getUpdateData({ time: Date.now(), value: Math.random() * 100 });
-  }, 5000);
+  lineChart.initData({
+    time: Date.now(),
+    value: Math.random() * 100,
+  });
 });

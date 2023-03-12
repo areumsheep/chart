@@ -1,4 +1,4 @@
-import LineChartModel from '../models/LineChartModel';
+import LineChartModel from '../models/lineChart.model';
 import CanvasDrawHelper from '../utils/canvasDrawHelper';
 
 class BackgroundCanvas {

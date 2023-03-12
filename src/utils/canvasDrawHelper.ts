@@ -1,4 +1,4 @@
-import LineChartModel from '../models/LineChartModel';
+import LineChartModel from '../models/lineChart.model';
 import type { Rect } from '../types/LineChart';
 
 const drawLine = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
@@ -15,7 +15,18 @@ const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   drawLine(ctx, { x, y, w, h });
 };
 
+const copyDraw = (
+  ctx: CanvasRenderingContext2D,
+  target: HTMLCanvasElement,
+  model: LineChartModel
+) => {
+  const { w, h } = model.options.rect;
+  ctx.clearRect(0, 0, w, h);
+  ctx.drawImage(target, 0, 0);
+};
+
 export default {
   drawLine,
   draw,
+  copyDraw,
 };
