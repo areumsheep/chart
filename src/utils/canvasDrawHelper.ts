@@ -12,7 +12,10 @@ const drawLine = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
 
 const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   const { x, y, w, h } = model.options.rect;
-  drawLine(ctx, { x, y, w, h });
+
+  ctx.clearRect(0, 0, w, h);
+  drawLine(ctx, { x, y, w: x, h });
+  drawLine(ctx, { x, y: h, w, h });
 };
 
 const copyDraw = (
