@@ -4,8 +4,8 @@ export const initialData: ChartOptions = {
   rect: {
     x: 0,
     y: 0,
-    w: 700,
-    h: 800,
+    w: 500,
+    h: 300,
   },
   axisX: {
     range: {
