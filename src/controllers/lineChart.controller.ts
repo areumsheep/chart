@@ -13,7 +13,9 @@ class LineChartController {
   }
 
   updateModel = () => {
-    this.view.render(this.model);
+    requestAnimationFrame(() => {
+      this.view.render(this.model);
+    });
   };
 }
 

@@ -13,17 +13,11 @@ class LineChartView {
   controller?: LineChartController;
 
   constructor(canvas: HTMLCanvasElement) {
-    const dpr = window.devicePixelRatio || 1;
-    const { width, height } = canvas;
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-
     this.canvasWidth = canvas.width;
     this.canvasHeight = canvas.height;
 
     this.canvasContext = canvas.getContext('2d')!;
-    this.backgroundCanvas = new BackgroundCanvas(canvas, dpr);
+    this.backgroundCanvas = new BackgroundCanvas(canvas);
   }
 
   setController = (controller: LineChartController) => {

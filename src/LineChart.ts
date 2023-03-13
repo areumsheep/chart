@@ -11,6 +11,12 @@ class LineChart {
   controller: LineChartController;
 
   constructor(canvas: HTMLCanvasElement, options: ChartOptions) {
+    const dpr = window.devicePixelRatio || 1;
+    const { width, height } = canvas;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
     this.view = new LineChartView(canvas);
     this.model = new LineChartModel(options);
 

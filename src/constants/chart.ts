@@ -1,6 +1,6 @@
 const CHART = {
   PADDING: {
-    VERTICAL: 15,
+    VERTICAL: 17,
     HORIZONTAL: 20,
   },
 };

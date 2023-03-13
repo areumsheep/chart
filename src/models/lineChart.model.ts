@@ -25,6 +25,15 @@ class LineChartModel {
 
   getUpdateData = (datum: Datum) => {
     this.points.push(datum);
+    this.options = {
+      ...this.options,
+      axisX: {
+        range: {
+          start: Date.now() - 60 * 5 * 1000,
+          end: Date.now(),
+        },
+      },
+    };
   };
 }
 
