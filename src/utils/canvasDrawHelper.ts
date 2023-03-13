@@ -1,16 +1,20 @@
 import CHART from '../constants/chart';
 import LineChartModel from '../models/lineChart.model';
-import type { Rect, ChartOptions } from '../types/LineChart';
+import type { Rect, ChartOptions, PartialLineStyle } from '../types/LineChart';
 
 import { formatDate } from './dateFormat';
 
-const drawLine = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
-  ctx.save();
+const drawLine = (
+  ctx: CanvasRenderingContext2D,
+  { x, y, w, h }: Rect,
+  lineStyle?: PartialLineStyle
+) => {
   ctx.beginPath();
+  ctx.setLineDash(lineStyle?.dashStyle || []);
+  ctx.strokeStyle = lineStyle?.color || 'black';
   ctx.moveTo(x, y);
   ctx.lineTo(w, h);
   ctx.stroke();
-  ctx.restore();
 };
 
 const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
@@ -33,7 +37,6 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
     const xPoint =
       Math.floor(timePoint * bandWidth + CHART.PADDING.VERTICAL) - 1;
 
-    console.log(xPoint);
     const text = formatDate(format, new Date(current));
     current += xTick;
 
@@ -45,15 +48,46 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   ctx.restore();
 };
 
+const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
+  const { w, h } = options.rect;
+  const {
+    range: { start, end },
+  } = options.axisY;
+  const { y: yTick } = options.ticks;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.textAlign = 'right';
+
+  const tickCount = end / yTick;
+  const bandWidth = Math.floor((h - CHART.PADDING.VERTICAL) / tickCount);
+
+  for (let i = start; i <= end; i += yTick) {
+    const yPoint = Math.floor(h - (i / end) * bandWidth * tickCount);
+    ctx.fillText(`${i}`, CHART.PADDING.VERTICAL, yPoint);
+
+    if (i !== 0) {
+      drawLine(
+        ctx,
+        { x: CHART.PADDING.HORIZONTAL, y: yPoint, w, h: yPoint },
+        { dashStyle: [3, 3], color: 'lightgray' }
+      );
+    }
+  }
+  ctx.stroke();
+  ctx.restore();
+};
+
 const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   const { x, y, w, h } = model.options.rect;
 
   ctx.clearRect(0, 0, w + CHART.PADDING.HORIZONTAL, h + CHART.PADDING.VERTICAL);
 
+  drawTickX(ctx, model.options);
+  drawTickY(ctx, model.options);
+
   drawLine(ctx, { x, y, w: x, h });
   drawLine(ctx, { x, y: h, w, h });
-
-  drawTickX(ctx, model.options);
 };
 
 const copyDraw = (

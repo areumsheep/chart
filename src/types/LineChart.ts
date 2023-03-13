@@ -1,3 +1,4 @@
+import COLOR from '../constants/color';
 export interface ChartOptions {
   rect: Rect;
   axisX: {
@@ -8,6 +9,8 @@ export interface ChartOptions {
     format?: string;
     range: AxisRange;
   };
+
+  /** 간격 */
   ticks: Point;
 }
 
@@ -25,3 +28,9 @@ export interface Rect {
   w: number;
   h: number;
 }
+export interface LineStyle {
+  color: keyof typeof COLOR;
+  dashStyle: [number, number];
+}
+
+export type PartialLineStyle = Partial<LineStyle>;
