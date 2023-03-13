@@ -26,9 +26,14 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
 
   let current = start - (start % xTick);
   const tickCount = (end - start) / xTick;
+  const bandWidth = Math.floor((w - CHART.PADDING.VERTICAL) / tickCount);
 
   while (current <= end) {
-    const xPoint = ((current - start) / xTick) * (w / tickCount);
+    const timePoint = (current - start) / xTick;
+    const xPoint =
+      Math.floor(timePoint * bandWidth + CHART.PADDING.VERTICAL) - 1;
+
+    console.log(xPoint);
     const text = formatDate(format, new Date(current));
     current += xTick;
 
