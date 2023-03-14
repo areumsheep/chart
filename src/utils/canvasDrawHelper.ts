@@ -1,8 +1,14 @@
 import CHART from '../constants/chart';
+import COLOR from '../constants/color';
 import LineChartModel from '../models/lineChart.model';
-import type { Rect, ChartOptions, PartialLineStyle } from '../types/LineChart';
+import type {
+  Rect,
+  ChartOptions,
+  PartialLineStyle,
+  Point,
+} from '../types/LineChart';
 
-import { formatDate } from './dateFormat';
+import { formatDate } from './formatDate';
 
 const drawLine = (
   ctx: CanvasRenderingContext2D,
@@ -34,6 +40,7 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
 
   while (current <= end) {
     const timePoint = (current - start) / xTick;
+
     const xPoint =
       Math.floor(timePoint * bandWidth + CHART.PADDING.VERTICAL) - 1;
 
@@ -78,6 +85,22 @@ const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   ctx.restore();
 };
 
+const drawChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
+  ctx.save();
+  ctx.beginPath();
+
+  points.map(({ x, y }, index) => {
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    }
+    ctx.strokeStyle = COLOR.blue;
+    ctx.lineWidth = 2;
+    ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  ctx.restore();
+};
+
 const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   const { x, y, w, h } = model.options.rect;
 
@@ -88,6 +111,8 @@ const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
 
   drawLine(ctx, { x, y, w: x, h });
   drawLine(ctx, { x, y: h, w, h });
+
+  drawChart(ctx, model.points);
 };
 
 const copyDraw = (

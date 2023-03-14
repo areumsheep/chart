@@ -30,6 +30,8 @@ class LineChart {
 
   updateData = (datum: Datum) => {
     this.model.getUpdateData(datum);
+    const points = this.controller.formatPoints(this.model.datas);
+    this.model.getUpdatePoint(points);
     this.controller.updateModel();
   };
 }

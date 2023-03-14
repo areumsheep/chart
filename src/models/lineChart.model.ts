@@ -1,10 +1,10 @@
-import type { Datum, Data } from '../types/Data';
-import { ChartOptions } from '../types/LineChart';
-
+import { ChartOptions, Point } from '../types/LineChart';
 import CHART from '../constants/chart';
+import { Datum } from '../types/Data';
 
 class LineChartModel {
-  points: Data = [];
+  points: Point[] = [];
+  datas: Datum[] = [];
   options: ChartOptions;
 
   constructor(options: ChartOptions) {
@@ -20,11 +20,11 @@ class LineChartModel {
   }
 
   getInitialData = (datum: Datum) => {
-    this.points.push(datum);
+    this.datas.push(datum);
   };
 
   getUpdateData = (datum: Datum) => {
-    this.points.push(datum);
+    this.datas.push(datum);
     this.options = {
       ...this.options,
       axisX: {
@@ -34,6 +34,10 @@ class LineChartModel {
         },
       },
     };
+  };
+
+  getUpdatePoint = (points: Point[]) => {
+    this.points = points;
   };
 }
 
