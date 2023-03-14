@@ -7,22 +7,34 @@ import CrossHair from './views/crosshair.view';
 import type { ChartOptions } from './types/LineChart';
 import type { Datum } from './types/Data';
 
+import createCanvasElement from './utils/createCanvasElement';
+
 class LineChart {
+  wrapper: HTMLElement;
   view: LineChartView;
   model: LineChartModel;
   controller: LineChartController;
   crosshair: CrossHair;
 
-  constructor(canvas: HTMLCanvasElement, options: ChartOptions) {
-    const dpr = window.devicePixelRatio || 1;
-    const { width, height } = canvas;
+  constructor($target: HTMLElement, options: ChartOptions) {
+    const { w, h } = options.rect;
 
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    const wrapper = document.createElement('div');
+    wrapper.style.width = `${w}px`;
+    wrapper.style.height = `${h}px`;
+    this.wrapper = wrapper;
 
-    this.crosshair = new CrossHair(canvas, canvas.width, canvas.height);
+    const displayCanvas = createCanvasElement(w, h);
+    const crosshairCanvas = createCanvasElement(w, h);
 
-    this.view = new LineChartView(canvas);
+    this.wrapper.insertAdjacentElement('afterbegin', displayCanvas);
+    this.wrapper.insertAdjacentElement('afterbegin', crosshairCanvas);
+
+    $target.insertAdjacentElement('afterbegin', this.wrapper);
+
+    this.crosshair = new CrossHair(crosshairCanvas);
+
+    this.view = new LineChartView(displayCanvas);
     this.model = new LineChartModel(options);
     this.controller = new LineChartController(
       this.view,
@@ -33,6 +45,7 @@ class LineChart {
 
   initData = (datum: Datum) => {
     this.model.getInitialData(datum);
+    this.view.bindEvent();
     this.crosshair.bindEvent();
 
     this.controller.updateModel();

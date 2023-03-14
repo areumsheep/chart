@@ -1,10 +1,10 @@
 import LineChart from './LineChart';
 import { initialData } from './constants/initalData';
 
-const $lineChart = document.querySelector('#lineChart') as HTMLCanvasElement;
+const $app = document.querySelector('#app') as HTMLDivElement;
 
 document.addEventListener('DOMContentLoaded', () => {
-  const lineChart = new LineChart($lineChart, initialData);
+  const lineChart = new LineChart($app, initialData);
 
   lineChart.initData({
     time: Date.now(),

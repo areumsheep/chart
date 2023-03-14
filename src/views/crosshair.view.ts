@@ -11,22 +11,11 @@ class CrossHair {
   controller?: LineChartController;
   nearestPoint?: Point;
 
-  constructor(
-    $target: HTMLCanvasElement,
-    width: number,
-    height: number,
-    id?: string
-  ) {
-    this.crossHair.width = width;
-    this.crossHair.height = height;
-    this.crossHair.id = id || 'canvas';
-    this.crossHair.style.position = 'absolute';
-
+  constructor(canvas: HTMLCanvasElement) {
+    this.crossHair = canvas;
     this.ctx = this.crossHair.getContext('2d')!;
-    this.canvasWidth = width;
-    this.canvasHeight = height;
-
-    $target.parentElement?.insertAdjacentElement('beforeend', this.crossHair);
+    this.canvasWidth = canvas.width;
+    this.canvasHeight = canvas.height;
   }
 
   setController = (controller: LineChartController) => {

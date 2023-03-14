@@ -6,7 +6,7 @@ import CanvasDrawHelper from '../utils/canvasDrawHelper';
 
 class LineChartView {
   canvas: HTMLCanvasElement;
-  canvasContext: CanvasRenderingContext2D;
+  ctx: CanvasRenderingContext2D;
   canvasWidth: number;
   canvasHeight: number;
 
@@ -14,11 +14,12 @@ class LineChartView {
   controller?: LineChartController;
 
   constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d')!;
+
     this.canvasWidth = canvas.width;
     this.canvasHeight = canvas.height;
 
-    this.canvas = canvas;
-    this.canvasContext = canvas.getContext('2d')!;
     this.backgroundCanvas = new BackgroundCanvas(canvas);
   }
 
@@ -26,9 +27,19 @@ class LineChartView {
     this.controller = controller;
   };
 
+  bindEvent = () => {
+    this.canvas.addEventListener(
+      'wheel',
+      (event) => {
+        console.log(event);
+      },
+      { passive: true }
+    );
+  };
+
   render(model: LineChartModel) {
     const backgroundCanvas = this.backgroundCanvas.draw(model);
-    CanvasDrawHelper.copyDraw(this.canvasContext, backgroundCanvas, model);
+    CanvasDrawHelper.copyDraw(this.ctx, backgroundCanvas, model);
   }
 }
 
