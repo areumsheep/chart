@@ -77,7 +77,7 @@ const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
       drawLine(
         ctx,
         { x: CHART.PADDING.HORIZONTAL, y: yPoint, w, h: yPoint },
-        { dashStyle: [3, 3], color: 'lightgray' }
+        { dashStyle: [2, 2], color: 'lightgray' }
       );
     }
   }
@@ -137,16 +137,19 @@ const drawCrossHair = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
 
   ctx.beginPath();
   ctx.save();
-  ctx.setLineDash([4]);
+  ctx.setLineDash([1]);
 
   ctx.moveTo(x, CHART.PADDING.HORIZONTAL);
   ctx.lineTo(x, h);
 
-  ctx.moveTo(CHART.PADDING.VERTICAL, y);
-  ctx.lineTo(w, y);
-
   ctx.stroke();
   ctx.restore();
+
+  const circle = new Path2D();
+  circle.arc(x, y, 4, 0, 2 * Math.PI);
+
+  ctx.fillStyle = COLOR.darkblue;
+  ctx.fill(circle);
 };
 
 export default {
