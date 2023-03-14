@@ -27,16 +27,6 @@ class LineChartView {
     this.controller = controller;
   };
 
-  bindEvent = () => {
-    this.canvas.addEventListener(
-      'wheel',
-      (event) => {
-        console.log(event);
-      },
-      { passive: true }
-    );
-  };
-
   render(model: LineChartModel) {
     const backgroundCanvas = this.backgroundCanvas.draw(model);
     CanvasDrawHelper.copyDraw(this.ctx, backgroundCanvas, model);

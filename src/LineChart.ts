@@ -24,7 +24,7 @@ class LineChart {
     wrapper.style.height = `${h}px`;
     this.wrapper = wrapper;
 
-    const displayCanvas = createCanvasElement(w, h);
+    const displayCanvas = createCanvasElement(w, h, 1);
     const crosshairCanvas = createCanvasElement(w, h);
 
     this.wrapper.insertAdjacentElement('afterbegin', displayCanvas);

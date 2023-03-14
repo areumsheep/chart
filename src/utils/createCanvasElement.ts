@@ -1,4 +1,4 @@
-const createCanvasElement = (width: number, height: number) => {
+const createCanvasElement = (width: number, height: number, ratio?: number) => {
   const dpr = window.devicePixelRatio || 1;
 
   const canvas = document.createElement('canvas');
@@ -9,7 +9,7 @@ const createCanvasElement = (width: number, height: number) => {
   canvas.style.height = `${height}px`;
 
   const context = canvas.getContext('2d');
-  context?.scale(dpr, dpr);
+  context?.scale(ratio || dpr, ratio || dpr);
 
   return canvas;
 };
