@@ -12,6 +12,12 @@ import EVENT from './constants/event';
 
 class LineChart {
   wrapper: HTMLElement;
+  targetWidth: number;
+  targetHeight: number;
+
+  displayCanvas: HTMLCanvasElement;
+  crosshairCanvas: HTMLCanvasElement;
+
   view: LineChartView;
   model: LineChartModel;
   controller: LineChartController;
@@ -24,9 +30,13 @@ class LineChart {
     wrapper.style.width = `${w}px`;
     wrapper.style.height = `${h}px`;
     this.wrapper = wrapper;
+    this.targetWidth = w;
+    this.targetHeight = h;
 
     const displayCanvas = createCanvasElement(w, h, 1);
     const crosshairCanvas = createCanvasElement(w, h);
+    this.displayCanvas = displayCanvas;
+    this.crosshairCanvas = crosshairCanvas;
 
     this.wrapper.insertAdjacentElement('afterbegin', displayCanvas);
     this.wrapper.insertAdjacentElement('afterbegin', crosshairCanvas);
@@ -76,6 +86,38 @@ class LineChart {
       },
       { passive: true }
     );
+
+    window.addEventListener('resize', () => {
+      const dpr = window.devicePixelRatio || 1;
+      const { innerWidth } = window;
+      const PADDING = 16;
+      const changeWidth = innerWidth - PADDING;
+
+      if (changeWidth > this.targetWidth) {
+        this.wrapper.style.width = `${this.targetWidth}px`;
+
+        this.displayCanvas.width = this.targetWidth * dpr;
+        this.displayCanvas.style.width = `${this.targetWidth}px`;
+        this.crosshairCanvas.width = this.targetWidth * dpr;
+        this.crosshairCanvas.style.width = `${this.targetWidth}px`;
+
+        const points = this.controller.formatPoints(this.model.datas);
+        this.model.setPoints(points);
+        this.controller.updateModel();
+        return;
+      }
+      this.wrapper.style.width = `${changeWidth}px`;
+
+      this.displayCanvas.width = changeWidth * dpr;
+      this.displayCanvas.style.width = `${changeWidth}px`;
+      this.crosshairCanvas.width = changeWidth * dpr;
+      this.crosshairCanvas.style.width = `${changeWidth}px`;
+
+      this.model.setWidth(innerWidth);
+      const points = this.controller.formatPoints(this.model.datas);
+      this.model.setPoints(points);
+      this.controller.updateModel();
+    });
   };
 }
 

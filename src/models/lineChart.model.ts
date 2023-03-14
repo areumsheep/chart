@@ -78,6 +78,10 @@ class LineChartModel {
 
     this.options.axisY.range.end = point;
   };
+
+  setWidth = (width: number) => {
+    this.options.rect.w = width;
+  };
 }
 
 export default LineChartModel;
