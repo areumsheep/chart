@@ -5,6 +5,7 @@ import BackgroundCanvas from './backgroundCanvas.view';
 import CanvasDrawHelper from '../utils/canvasDrawHelper';
 
 class LineChartView {
+  canvas: HTMLCanvasElement;
   canvasContext: CanvasRenderingContext2D;
   canvasWidth: number;
   canvasHeight: number;
@@ -16,6 +17,7 @@ class LineChartView {
     this.canvasWidth = canvas.width;
     this.canvasHeight = canvas.height;
 
+    this.canvas = canvas;
     this.canvasContext = canvas.getContext('2d')!;
     this.backgroundCanvas = new BackgroundCanvas(canvas);
   }

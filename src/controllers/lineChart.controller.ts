@@ -4,15 +4,25 @@ import CHART from '../constants/chart';
 import type { Datum } from '../types/Data';
 import type { Point } from '../types/LineChart';
 
+import { binarySearch } from '../utils/search';
+import CrossHair from '../views/crosshair.view';
+
 class LineChartController {
   view: LineChartView;
   model: LineChartModel;
+  crosshair: CrossHair;
 
-  constructor(view: LineChartView, model: LineChartModel) {
+  constructor(
+    view: LineChartView,
+    model: LineChartModel,
+    crosshair: CrossHair
+  ) {
     this.view = view;
     this.model = model;
+    this.crosshair = crosshair;
 
     this.view.setController(this);
+    this.crosshair.setController(this);
   }
 
   formatX = (time: number) => {
@@ -72,6 +82,14 @@ class LineChartController {
     const yPoint = Math.floor(h - (value / end) * bandWidth * tickCount);
 
     return yPoint;
+  };
+
+  findNearestPoint = (event: MouseEvent, canvasViewportLeft: number) => {
+    const mouseX = event.clientX - canvasViewportLeft;
+    const nearestIndex = binarySearch(this.model.points, mouseX, 'x');
+    const nearestPoint = this.model.points[nearestIndex];
+
+    return nearestPoint;
   };
 
   updateModel = () => {
