@@ -8,6 +8,7 @@ import type { ChartOptions } from './types/LineChart';
 import type { Datum } from './types/Data';
 
 import createCanvasElement from './utils/createCanvasElement';
+import EVENT from './constants/event';
 
 class LineChart {
   wrapper: HTMLElement;
@@ -68,11 +69,7 @@ class LineChart {
     this.wrapper.addEventListener(
       'wheel',
       (event) => {
-        let type = 'ZOOM-IN';
-        if (event.deltaY > 0) {
-          type = 'ZOOM-OUT';
-        }
-        this.model.setAxisY(type);
+        this.model.setAxisY(event.deltaY > 0 ? EVENT.ZOOM_OUT : EVENT.ZOOM_IN);
         const points = this.controller.formatPoints(this.model.datas);
         this.model.setPoints(points);
         this.controller.updateModel();

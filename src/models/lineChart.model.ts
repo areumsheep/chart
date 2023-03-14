@@ -1,13 +1,24 @@
-import { ChartOptions, Point } from '../types/LineChart';
-import CHART from '../constants/chart';
-import { Datum } from '../types/Data';
+import type { Datum } from '../types/Data';
+import type { ChartOptions, Point } from '../types/LineChart';
 
+import CHART from '../constants/chart';
+import EVENT, { type EventKey } from '../constants/event';
+
+const MAX_END_POINT_COUNT = 3;
 class LineChartModel {
   points: Point[] = [];
   datas: Datum[] = [];
   options: ChartOptions;
 
   constructor(options: ChartOptions) {
+    const {
+      tick,
+      range: { start, end },
+    } = options.axisY;
+
+    const minY = start + tick;
+    const maxY = end * MAX_END_POINT_COUNT;
+
     this.options = {
       ...options,
       rect: {
@@ -15,6 +26,11 @@ class LineChartModel {
         y: CHART.PADDING.VERTICAL,
         w: options.rect.w - CHART.PADDING.HORIZONTAL,
         h: options.rect.h - CHART.PADDING.VERTICAL,
+      },
+      axisY: {
+        ...options.axisY,
+        min: minY,
+        max: maxY,
       },
     };
   }
@@ -42,31 +58,25 @@ class LineChartModel {
     this.points = points;
   };
 
-  setAxisY = (type = 'ZOOM-IN') => {
+  setAxisY = (type: EventKey) => {
     const {
+      min,
+      max,
       tick,
-      range: { start, end },
+      range: { end },
     } = this.options.axisY;
 
     let point = end;
-    if (type === 'ZOOM-IN') {
+    if (type === EVENT.ZOOM_IN) {
       point += tick;
     } else {
       point -= tick;
     }
 
-    if (point >= start + tick && point <= 300) {
-      this.options = {
-        ...this.options,
-        axisY: {
-          ...this.options.axisY,
-          range: {
-            ...this.options.axisY.range,
-            end: point,
-          },
-        },
-      };
-    }
+    if (!max || !min) return;
+    if (!(point >= min && point <= max)) return;
+
+    this.options.axisY.range.end = point;
   };
 }
 
