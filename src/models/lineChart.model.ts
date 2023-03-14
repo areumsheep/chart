@@ -25,9 +25,11 @@ class LineChartModel {
 
   getUpdateData = (datum: Datum) => {
     this.datas.push(datum);
+
     this.options = {
       ...this.options,
       axisX: {
+        ...this.options.axisX,
         range: {
           start: Date.now() - 60 * 5 * 1000,
           end: Date.now(),
@@ -41,20 +43,23 @@ class LineChartModel {
   };
 
   setAxisY = (type = 'ZOOM-IN') => {
-    const { start, end } = this.options.axisY.range;
-    const { y } = this.options.ticks;
+    const {
+      tick,
+      range: { start, end },
+    } = this.options.axisY;
 
     let point = end;
     if (type === 'ZOOM-IN') {
-      point += y;
+      point += tick;
     } else {
-      point -= y;
+      point -= tick;
     }
 
-    if (point >= start + y && point <= 300) {
+    if (point >= start + tick && point <= 300) {
       this.options = {
         ...this.options,
         axisY: {
+          ...this.options.axisY,
           range: {
             ...this.options.axisY.range,
             end: point,

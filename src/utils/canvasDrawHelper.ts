@@ -26,26 +26,26 @@ const drawLine = (
 const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   const { w, h } = options.rect;
   const {
+    tick,
     format,
     range: { start, end },
   } = options.axisX;
-  const { x: xTick } = options.ticks;
 
   ctx.save();
   ctx.textAlign = 'center';
 
-  let current = start - (start % xTick);
-  const tickCount = (end - start) / xTick;
+  let current = start - (start % tick);
+  const tickCount = (end - start) / tick;
   const bandWidth = Math.floor((w - CHART.PADDING.VERTICAL) / tickCount);
 
   while (current <= end) {
-    const timePoint = (current - start) / xTick;
+    const timePoint = (current - start) / tick;
 
     const xPoint =
       Math.floor(timePoint * bandWidth + CHART.PADDING.VERTICAL) - 1;
 
     const text = formatDate(format, new Date(current));
-    current += xTick;
+    current += tick;
 
     if (xPoint < CHART.PADDING.VERTICAL) continue;
     drawLine(ctx, { x: xPoint, y: h, w: xPoint, h: h + 5 });
@@ -58,18 +58,18 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
 const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   const { w, h } = options.rect;
   const {
+    tick,
     range: { start, end },
   } = options.axisY;
-  const { y: yTick } = options.ticks;
 
   ctx.save();
   ctx.beginPath();
   ctx.textAlign = 'right';
 
-  const tickCount = end / yTick;
+  const tickCount = end / tick;
   const bandWidth = Math.floor((h - CHART.PADDING.VERTICAL) / tickCount);
 
-  for (let i = start; i <= end; i += yTick) {
+  for (let i = start; i <= end; i += tick) {
     const yPoint = Math.floor(h - (i / end) * bandWidth * tickCount);
     ctx.fillText(`${i}`, CHART.PADDING.VERTICAL, yPoint);
 

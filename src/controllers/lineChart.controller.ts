@@ -28,14 +28,14 @@ class LineChartController {
   formatX = (time: number) => {
     const { w } = this.model.options.rect;
     const {
+      tick,
       range: { start, end },
     } = this.model.options.axisX;
-    const { x: xTick } = this.model.options.ticks;
 
-    const xTickCount = (end - start) / xTick;
+    const xTickCount = (end - start) / tick;
     const bandWidthX = Math.floor((w - CHART.PADDING.VERTICAL) / xTickCount);
 
-    const timePoint = (time - start) / xTick;
+    const timePoint = (time - start) / tick;
     const xPoint =
       Math.floor(timePoint * bandWidthX + CHART.PADDING.VERTICAL) - 1;
 
@@ -45,11 +45,11 @@ class LineChartController {
   formatY = (value: number) => {
     const { h } = this.model.options.rect;
     const {
+      tick,
       range: { end },
     } = this.model.options.axisY;
-    const { y: yTick } = this.model.options.ticks;
 
-    const tickCount = end / yTick;
+    const tickCount = end / tick;
     const bandWidth = Math.floor((h - CHART.PADDING.VERTICAL) / tickCount);
 
     const yPoint = Math.floor(h - (value / end) * bandWidth * tickCount);
@@ -68,20 +68,6 @@ class LineChartController {
     });
 
     return points;
-  };
-
-  formatPointByValue = ({ value }: Datum) => {
-    const { h } = this.model.options.rect;
-    const {
-      range: { end },
-    } = this.model.options.axisY;
-    const { y: yTick } = this.model.options.ticks;
-
-    const tickCount = end / yTick;
-    const bandWidth = Math.floor((h - CHART.PADDING.VERTICAL) / tickCount);
-    const yPoint = Math.floor(h - (value / end) * bandWidth * tickCount);
-
-    return yPoint;
   };
 
   findNearestPoint = (point: number) => {

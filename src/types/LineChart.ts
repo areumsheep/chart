@@ -3,15 +3,16 @@ export interface ChartOptions {
   rect: Rect;
   axisX: {
     format?: string;
+    tick: number;
     range: AxisRange;
   };
   axisY: {
     format?: string;
+    min?: number;
+    max?: number;
+    tick: number;
     range: AxisRange;
   };
-
-  /** 간격 */
-  ticks: Point;
 }
 
 export interface AxisRange {
