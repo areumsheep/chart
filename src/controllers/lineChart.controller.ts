@@ -84,12 +84,9 @@ class LineChartController {
     return yPoint;
   };
 
-  findNearestPoint = (event: MouseEvent, canvasViewportLeft: number) => {
-    const mouseX = event.clientX - canvasViewportLeft;
-    const nearestIndex = binarySearch(this.model.points, mouseX, 'x');
-    const nearestPoint = this.model.points[nearestIndex];
-
-    return nearestPoint;
+  findNearestPoint = (point: number) => {
+    const nearestIndex = binarySearch(this.model.points, point, 'x');
+    return this.model.points[nearestIndex];
   };
 
   updateModel = () => {

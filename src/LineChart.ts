@@ -44,10 +44,9 @@ class LineChart {
   }
 
   initData = (datum: Datum) => {
-    this.model.getInitialData(datum);
-    this.view.bindEvent();
-    this.crosshair.bindEvent();
+    this.bindEvents();
 
+    this.model.getInitialData(datum);
     this.controller.updateModel();
   };
 
@@ -56,6 +55,15 @@ class LineChart {
     const points = this.controller.formatPoints(this.model.datas);
     this.model.getUpdatePoint(points);
     this.controller.updateModel();
+  };
+
+  bindEvents = () => {
+    this.wrapper.addEventListener('mousemove', (event) => {
+      const nearestPoint = this.crosshair.getNearestPoint(event);
+      if (nearestPoint) {
+        this.crosshair.render(nearestPoint);
+      }
+    });
   };
 }
 

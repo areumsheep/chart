@@ -9,7 +9,6 @@ class CrossHair {
   canvasHeight: number;
 
   controller?: LineChartController;
-  nearestPoint?: Point;
 
   constructor(canvas: HTMLCanvasElement) {
     this.crossHair = canvas;
@@ -22,21 +21,16 @@ class CrossHair {
     this.controller = controller;
   };
 
-  bindEvent = () => {
-    this.crossHair.addEventListener('mousemove', (event) => {
-      const rect = this.crossHair.getBoundingClientRect();
-      const nearestPoint = this.controller?.findNearestPoint(event, rect.left);
+  getNearestPoint = (event: MouseEvent) => {
+    const rect = this.crossHair.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
 
-      if (nearestPoint) {
-        this.nearestPoint = nearestPoint;
-        this.render();
-      }
-    });
+    return this.controller?.findNearestPoint(mouseX);
   };
 
-  render = () => {
+  render = (nearestPoint: Point) => {
     const rect: Rect = {
-      ...this.nearestPoint!,
+      ...nearestPoint,
       w: this.canvasWidth,
       h: this.canvasHeight,
     };
