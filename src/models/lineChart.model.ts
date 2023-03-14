@@ -6,7 +6,6 @@ class LineChartModel {
   points: Point[] = [];
   datas: Datum[] = [];
   options: ChartOptions;
-  nearestPoint?: Point;
 
   constructor(options: ChartOptions) {
     this.options = {
@@ -37,12 +36,8 @@ class LineChartModel {
     };
   };
 
-  getUpdatePoint = (points: Point[]) => {
+  setPoints = (points: Point[]) => {
     this.points = points;
-  };
-
-  getNearestPoint = (nearestPoint: Point) => {
-    this.nearestPoint = nearestPoint;
   };
 }
 
