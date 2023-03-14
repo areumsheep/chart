@@ -39,6 +39,30 @@ class LineChartModel {
   setPoints = (points: Point[]) => {
     this.points = points;
   };
+
+  setAxisY = (type = 'ZOOM-IN') => {
+    const { start, end } = this.options.axisY.range;
+    const { y } = this.options.ticks;
+
+    let point = end;
+    if (type === 'ZOOM-IN') {
+      point += y;
+    } else {
+      point -= y;
+    }
+
+    if (point >= start + y && point <= 300) {
+      this.options = {
+        ...this.options,
+        axisY: {
+          range: {
+            ...this.options.axisY.range,
+            end: point,
+          },
+        },
+      };
+    }
+  };
 }
 
 export default LineChartModel;

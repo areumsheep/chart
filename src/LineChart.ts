@@ -64,6 +64,21 @@ class LineChart {
         this.crosshair.render(nearestPoint);
       }
     });
+
+    this.wrapper.addEventListener(
+      'wheel',
+      (event) => {
+        let type = 'ZOOM-IN';
+        if (event.deltaY > 0) {
+          type = 'ZOOM-OUT';
+        }
+        this.model.setAxisY(type);
+        const points = this.controller.formatPoints(this.model.datas);
+        this.model.setPoints(points);
+        this.controller.updateModel();
+      },
+      { passive: true }
+    );
   };
 }
 
