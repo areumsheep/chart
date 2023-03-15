@@ -7,6 +7,7 @@ import EVENT, { type EventKey } from '../constants/event';
 const MAX_END_POINT_COUNT = 2;
 class LineChartModel {
   points: Point[] = [];
+  clickedPoints: Point[] = [];
   datas: Datum[] = [];
   options: ChartOptions;
 
@@ -85,6 +86,10 @@ class LineChartModel {
 
   setHeight = (height: number) => {
     this.options.rect.h = height;
+  };
+
+  addClickedPoint = (point: Point) => {
+    this.clickedPoints.push(point);
   };
 }
 

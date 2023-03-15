@@ -95,6 +95,22 @@ class LineChart {
         this.changeSize(this.targetWidth);
       }
     });
+
+    this.wrapper.addEventListener('mousedown', (event) => {
+      event.preventDefault();
+
+      if (event.button === 0) {
+        this.model.addClickedPoint({ x: event.clientX, y: event.clientY });
+        this.controller.updateModel();
+      }
+      if (event.button === 3 || event.button === 2) {
+        console.log('Right mouse button clicked');
+      }
+    });
+
+    this.wrapper.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
   };
 
   changeSize = (width?: number, height?: number) => {

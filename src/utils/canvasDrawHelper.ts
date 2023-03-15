@@ -101,6 +101,28 @@ const drawChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
   ctx.restore();
 };
 
+const drawClickedChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
+  ctx.save();
+  ctx.beginPath();
+
+  points.map(({ x, y }, index) => {
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    }
+    ctx.strokeStyle = COLOR.orange;
+    ctx.lineWidth = 2;
+    ctx.lineTo(x, y);
+
+    const circle = new Path2D();
+    circle.arc(x, y, 4, 0, 2 * Math.PI);
+
+    ctx.fillStyle = COLOR.darkorange;
+    ctx.fill(circle);
+  });
+  ctx.stroke();
+  ctx.restore();
+};
+
 const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   const { x, y, w, h } = model.options.rect;
 
@@ -113,6 +135,7 @@ const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   drawLine(ctx, { x, y: h, w, h });
 
   drawChart(ctx, model.points);
+  drawClickedChart(ctx, model.clickedPoints);
 };
 
 const copyDraw = (
