@@ -64,11 +64,13 @@ class LineChart {
   };
 
   bindEvents = () => {
+    // 마우스 이동 이벤트
     this.wrapper.addEventListener('mousemove', (event) => {
       this.crosshair.findNearestPoint(event);
       this.crosshair.render();
     });
 
+    // 마우스 휠 이벤트
     this.wrapper.addEventListener(
       'wheel',
       (event) => {
@@ -78,25 +80,16 @@ class LineChart {
       { passive: true }
     );
 
-    window.addEventListener('resize', () => {
-      const { innerWidth } = window;
-      const PADDING = 16;
-      const changeWidth = innerWidth - PADDING;
-
-      if (changeWidth < this.targetWidth) {
-        this.changeSize(changeWidth);
-      } else {
-        this.changeSize(this.targetWidth);
-      }
-    });
-
+    // 마우스 왼쪽, 오른쪽 이벤트
     this.wrapper.addEventListener('mousedown', (event) => {
       event.preventDefault();
+      const isLeftClick = event.button === 0;
+      const isRightClick = event.button === 2 || event.button === 3;
 
-      if (event.button === 0) {
+      if (isLeftClick) {
         this.model.addClickedPoint({ x: event.clientX, y: event.clientY });
       }
-      if (event.button === 3 || event.button === 2) {
+      if (isRightClick) {
         const index = this.model.findNearestPointIndex(
           this.model.clickedPoints,
           event.clientX,
@@ -107,8 +100,22 @@ class LineChart {
       this.controller.paint();
     });
 
+    // 마우스 오른쪽 클릭(메뉴 모음) 이벤트
     this.wrapper.addEventListener('contextmenu', (event) => {
       event.preventDefault();
+    });
+
+    // 화면 비율 (반응형) 이벤트
+    window.addEventListener('resize', () => {
+      const { innerWidth } = window;
+      const PADDING = 16;
+      const changeWidth = innerWidth - PADDING;
+
+      if (changeWidth < this.targetWidth) {
+        this.changeSize(changeWidth);
+      } else {
+        this.changeSize(this.targetWidth);
+      }
     });
   };
 
