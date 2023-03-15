@@ -101,11 +101,12 @@ class LineChart {
 
       if (event.button === 0) {
         this.model.addClickedPoint({ x: event.clientX, y: event.clientY });
-        this.controller.updateModel();
       }
       if (event.button === 3 || event.button === 2) {
-        console.log('Right mouse button clicked');
+        const index = this.controller.findNearestClickedPoint(event.clientX);
+        this.model.deleteClickedPoint(index);
       }
+      this.controller.updateModel();
     });
 
     this.wrapper.addEventListener('contextmenu', (event) => {

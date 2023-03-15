@@ -91,6 +91,10 @@ class LineChartModel {
   addClickedPoint = (point: Point) => {
     this.clickedPoints.push(point);
   };
+
+  deleteClickedPoint = (index: number) => {
+    this.clickedPoints.splice(index, 1);
+  };
 }
 
 export default LineChartModel;

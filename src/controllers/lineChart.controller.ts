@@ -75,6 +75,11 @@ class LineChartController {
     return this.model.points[nearestIndex];
   };
 
+  findNearestClickedPoint = (point: number) => {
+    const nearestIndex = binarySearch(this.model.clickedPoints, point, 'x');
+    return nearestIndex;
+  };
+
   updateModel = () => {
     requestAnimationFrame(() => {
       this.view.render(this.model);
