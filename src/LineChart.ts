@@ -54,7 +54,7 @@ class LineChart {
   initData = (datum: Datum) => {
     this.bindEvents();
 
-    this.model.getInitialData(datum);
+    this.model.setInitialData(datum);
     this.controller.updateModel();
   };
 

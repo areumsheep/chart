@@ -5,6 +5,7 @@ import type { Datum } from '../types/Data';
 import type { Point } from '../types/Chart';
 
 import { binarySearch } from '../utils/search';
+import { formatX, formatY } from '../utils/domain/formatDataToPoint';
 
 class LineChartController {
   view: LineChartView;
@@ -17,48 +18,32 @@ class LineChartController {
     this.view.setController(this);
   }
 
-  formatX = (time: number) => {
+  useFormatterX = (time: number) => {
     const { w } = this.model.options.rect;
     const {
       tick,
       range: { start, end },
     } = this.model.options.axisX;
 
-    const xTickCount = (end - start) / tick;
-    const bandWidthX = Math.floor(
-      (w - CHART_SETTINGS.PADDING.VERTICAL) / xTickCount
-    );
-
-    const timePoint = (time - start) / tick;
-    const xPoint =
-      Math.floor(timePoint * bandWidthX + CHART_SETTINGS.PADDING.VERTICAL) - 1;
-
-    return xPoint;
+    return formatX(w, start, end, tick)(time);
   };
 
-  formatY = (value: number) => {
+  useFormatterY = (value: number) => {
     const { h } = this.model.options.rect;
     const {
       tick,
       range: { end },
     } = this.model.options.axisY;
 
-    const tickCount = end / tick;
-    const bandWidth = Math.floor(
-      (h - CHART_SETTINGS.PADDING.VERTICAL) / tickCount
-    );
-
-    const yPoint = Math.floor(h - (value / end) * bandWidth * tickCount);
-
-    return yPoint;
+    return formatY(h, end, tick)(value);
   };
 
   formatPoints = (datas: Datum[]) => {
     const points: Point[] = [];
 
     datas.map(({ time, value }) => {
-      const x = this.formatX(time);
-      const y = this.formatY(value);
+      const x = this.useFormatterX(time);
+      const y = this.useFormatterY(value);
 
       points.push({ x, y });
     });

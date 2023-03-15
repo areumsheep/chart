@@ -36,7 +36,7 @@ class LineChartModel {
     };
   }
 
-  getInitialData = (datum: Datum) => {
+  setInitialData = (datum: Datum) => {
     this.datas.push(datum);
   };
 

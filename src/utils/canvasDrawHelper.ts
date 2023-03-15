@@ -7,10 +7,12 @@ import {
 import CHART_SETTINGS from '../constants/chartSettings';
 import COLOR from '../constants/color';
 import LineChartModel from '../models/lineChart.model';
-import type { Rect, ChartOptions, Point } from '../types/Chart';
+import type { ChartOptions, Point } from '../types/Chart';
 
 import { formatDate } from './formatDate';
+import { formatX, formatY } from './domain/formatDataToPoint';
 
+/** x축 라벨 출력 */
 const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   const { w, h } = options.rect;
   const {
@@ -23,16 +25,10 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   ctx.textAlign = 'center';
 
   let current = start - (start % tick);
-  const tickCount = (end - start) / tick;
-  const bandWidth = Math.floor(
-    (w - CHART_SETTINGS.PADDING.VERTICAL) / tickCount
-  );
+  const xPointFormatter = formatX(w, start, end, tick);
 
   while (current <= end) {
-    const timePoint = (current - start) / tick;
-
-    const xPoint =
-      Math.floor(timePoint * bandWidth + CHART_SETTINGS.PADDING.VERTICAL) - 1;
+    const xPoint = xPointFormatter(current);
 
     const text = formatDate(format, new Date(current));
     current += tick;
@@ -45,6 +41,7 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   ctx.restore();
 };
 
+/** y축 라벨 출력 */
 const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   const { w, h } = options.rect;
   const {
@@ -56,16 +53,13 @@ const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   ctx.beginPath();
   ctx.textAlign = 'right';
 
-  const tickCount = end / tick;
-  const bandWidth = Math.floor(
-    (h - CHART_SETTINGS.PADDING.VERTICAL) / tickCount
-  );
+  const yPointFormatter = formatY(h, end, tick);
 
   ctx.strokeStyle = COLOR.lightgray;
   setLineStyle(ctx, LineStyle.Dotted);
 
   for (let i = start; i <= end; i += tick) {
-    const yPoint = Math.floor(h - (i / end) * bandWidth * tickCount);
+    const yPoint = yPointFormatter(i);
     ctx.fillText(`${i}`, CHART_SETTINGS.PADDING.VERTICAL, yPoint);
 
     if (i !== 0) {
