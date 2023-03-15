@@ -5,9 +5,38 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chart</title>
+    <style>
+      form {
+        margin: 30px 10px;
+      }
+      label {
+        display: block;
+        margin: 5px 0;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <form id="resize-form">
+        <label>
+          <span>Width: </span>
+          <input type="number" required min="100" max="1000" id="width-input" />
+        </label>
+
+        <label>
+          <span>Height: </span>
+          <input
+            type="number"
+            required
+            min="100"
+            max="1000"
+            id="height-input"
+          />
+        </label>
+
+        <button type="submit">적용하기</button>
+      </form>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

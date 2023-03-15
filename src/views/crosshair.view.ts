@@ -31,9 +31,10 @@ class CrossHair {
   render = (nearestPoint: Point) => {
     const rect: Rect = {
       ...nearestPoint,
-      w: this.canvasWidth,
-      h: this.canvasHeight,
+      w: this.crossHair.width,
+      h: this.crossHair.height,
     };
+    console.log(nearestPoint);
     CanvasDrawHelper.drawCrossHair(this.ctx, rect);
   };
 }

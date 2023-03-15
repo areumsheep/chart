@@ -4,7 +4,7 @@ import type { ChartOptions, Point } from '../types/LineChart';
 import CHART from '../constants/chart';
 import EVENT, { type EventKey } from '../constants/event';
 
-const MAX_END_POINT_COUNT = 3;
+const MAX_END_POINT_COUNT = 2;
 class LineChartModel {
   points: Point[] = [];
   datas: Datum[] = [];
@@ -81,6 +81,10 @@ class LineChartModel {
 
   setWidth = (width: number) => {
     this.options.rect.w = width;
+  };
+
+  setHeight = (height: number) => {
+    this.options.rect.h = height;
   };
 }
 

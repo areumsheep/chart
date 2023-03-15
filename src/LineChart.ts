@@ -9,6 +9,7 @@ import type { Datum } from './types/Data';
 
 import createCanvasElement from './utils/createCanvasElement';
 import EVENT from './constants/event';
+import CHART from './constants/chart';
 
 class LineChart {
   wrapper: HTMLElement;
@@ -63,9 +64,7 @@ class LineChart {
 
   updateData = (datum: Datum) => {
     this.model.getUpdateData(datum);
-    const points = this.controller.formatPoints(this.model.datas);
-    this.model.setPoints(points);
-    this.controller.updateModel();
+    this.redrawChart();
   };
 
   bindEvents = () => {
@@ -80,44 +79,58 @@ class LineChart {
       'wheel',
       (event) => {
         this.model.setAxisY(event.deltaY > 0 ? EVENT.ZOOM_OUT : EVENT.ZOOM_IN);
-        const points = this.controller.formatPoints(this.model.datas);
-        this.model.setPoints(points);
-        this.controller.updateModel();
+        this.redrawChart();
       },
       { passive: true }
     );
 
     window.addEventListener('resize', () => {
-      const dpr = window.devicePixelRatio || 1;
       const { innerWidth } = window;
       const PADDING = 16;
       const changeWidth = innerWidth - PADDING;
 
-      if (changeWidth > this.targetWidth) {
-        this.wrapper.style.width = `${this.targetWidth}px`;
-
-        this.displayCanvas.width = this.targetWidth * dpr;
-        this.displayCanvas.style.width = `${this.targetWidth}px`;
-        this.crosshairCanvas.width = this.targetWidth * dpr;
-        this.crosshairCanvas.style.width = `${this.targetWidth}px`;
-
-        const points = this.controller.formatPoints(this.model.datas);
-        this.model.setPoints(points);
-        this.controller.updateModel();
-        return;
+      if (changeWidth < this.targetWidth) {
+        this.changeSize(changeWidth);
+      } else {
+        this.changeSize(this.targetWidth);
       }
-      this.wrapper.style.width = `${changeWidth}px`;
-
-      this.displayCanvas.width = changeWidth * dpr;
-      this.displayCanvas.style.width = `${changeWidth}px`;
-      this.crosshairCanvas.width = changeWidth * dpr;
-      this.crosshairCanvas.style.width = `${changeWidth}px`;
-
-      this.model.setWidth(innerWidth);
-      const points = this.controller.formatPoints(this.model.datas);
-      this.model.setPoints(points);
-      this.controller.updateModel();
     });
+  };
+
+  changeSize = (width?: number, height?: number) => {
+    const dpr = window.devicePixelRatio || 1;
+
+    if (width) {
+      this.wrapper.style.width = `${width}px`;
+
+      this.displayCanvas.width = width * dpr;
+      this.displayCanvas.style.width = `${width}px`;
+      this.crosshairCanvas.width = width * dpr;
+      this.crosshairCanvas.style.width = `${width}px`;
+
+      const chartWidth = width - CHART.PADDING.HORIZONTAL;
+      this.model.setWidth(chartWidth);
+    }
+    if (height) {
+      this.wrapper.style.height = `${height}px`;
+
+      this.displayCanvas.height = height * dpr;
+      this.displayCanvas.style.height = `${height}px`;
+      this.crosshairCanvas.height = height * dpr;
+      this.crosshairCanvas.style.height = `${height}px`;
+
+      const chartHeight = height - CHART.PADDING.VERTICAL;
+      this.model.setHeight(chartHeight);
+    }
+
+    this.crosshairCanvas.getContext('2d')?.scale(dpr, dpr);
+    this.redrawChart();
+  };
+
+  redrawChart = () => {
+    const points = this.controller.formatPoints(this.model.datas);
+    this.model.setPoints(points);
+    this.controller.updateModel();
   };
 }
 
