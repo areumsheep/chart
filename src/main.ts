@@ -1,7 +1,8 @@
 import LineChart from './LineChart';
 import { initialData } from './constants/initalData';
+import { $ } from './utils/dom';
 
-const $app = document.querySelector('#app') as HTMLDivElement;
+const $app = $<HTMLDivElement>('#app');
 
 document.addEventListener('DOMContentLoaded', () => {
   const lineChart = new LineChart($app, initialData);
