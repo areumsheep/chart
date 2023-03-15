@@ -1,16 +1,15 @@
+import {
+  drawHorizontalLine,
+  drawVerticalLine,
+  LineStyle,
+  setLineStyle,
+} from './../renderers/drawLine';
 import CHART_SETTINGS from '../constants/chartSettings';
 import COLOR from '../constants/color';
 import LineChartModel from '../models/lineChart.model';
 import type { Rect, ChartOptions, Point } from '../types/Chart';
 
 import { formatDate } from './formatDate';
-
-const drawLine = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(w, h);
-  ctx.stroke();
-};
 
 const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   const { w, h } = options.rect;
@@ -39,7 +38,7 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
     current += tick;
 
     if (xPoint < CHART_SETTINGS.PADDING.VERTICAL) continue;
-    drawLine(ctx, { x: xPoint, y: h, w: xPoint, h: h + 5 });
+    drawVerticalLine(ctx, xPoint, h, h + 5);
     ctx.font = '12px arial';
     ctx.fillText(text, xPoint, h + 15);
   }
@@ -62,17 +61,15 @@ const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
     (h - CHART_SETTINGS.PADDING.VERTICAL) / tickCount
   );
 
+  ctx.strokeStyle = COLOR.lightgray;
+  setLineStyle(ctx, LineStyle.Dotted);
+
   for (let i = start; i <= end; i += tick) {
     const yPoint = Math.floor(h - (i / end) * bandWidth * tickCount);
     ctx.fillText(`${i}`, CHART_SETTINGS.PADDING.VERTICAL, yPoint);
 
     if (i !== 0) {
-      drawLine(ctx, {
-        x: CHART_SETTINGS.PADDING.HORIZONTAL,
-        y: yPoint,
-        w,
-        h: yPoint,
-      });
+      drawHorizontalLine(ctx, yPoint, CHART_SETTINGS.PADDING.HORIZONTAL, w);
     }
   }
   ctx.stroke();
@@ -132,8 +129,8 @@ const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   drawTickX(ctx, model.options);
   drawTickY(ctx, model.options);
 
-  drawLine(ctx, { x, y, w: x, h });
-  drawLine(ctx, { x, y: h, w, h });
+  drawVerticalLine(ctx, x, y, h);
+  drawHorizontalLine(ctx, h, x, w);
 
   ctx.save();
   const chart = new Path2D();
@@ -164,6 +161,5 @@ const copyDraw = (
 
 export default {
   draw,
-  drawLine,
   copyDraw,
 };
