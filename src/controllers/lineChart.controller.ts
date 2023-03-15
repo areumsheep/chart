@@ -55,12 +55,6 @@ class LineChartController {
     const nearestIndex = binarySearch(this.model.clickedPoints, point, 'x');
     return nearestIndex;
   };
-
-  paint = () => {
-    requestAnimationFrame(() => {
-      this.view.render(this.model);
-    });
-  };
 }
 
 export default LineChartController;

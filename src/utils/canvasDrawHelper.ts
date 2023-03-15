@@ -70,8 +70,31 @@ const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   ctx.restore();
 };
 
-const drawChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
+const drawGrid = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
+  const { x, y, w, h } = model.options.rect;
+
+  ctx.clearRect(
+    0,
+    0,
+    w + CHART_SETTINGS.PADDING.HORIZONTAL,
+    h + CHART_SETTINGS.PADDING.VERTICAL
+  );
+
+  drawTickX(ctx, model.options);
+  drawTickY(ctx, model.options);
+
+  drawVerticalLine(ctx, x, y, h);
+  drawHorizontalLine(ctx, h, x, w);
+};
+
+const drawChart = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
+  const { w, h } = model.options.rect;
+  const { points } = model;
+
   ctx.save();
+  const chart = new Path2D();
+  chart.rect(CHART_SETTINGS.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
+  ctx.clip(chart, 'evenodd');
 
   ctx.beginPath();
 
@@ -88,11 +111,19 @@ const drawChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
   ctx.restore();
 };
 
-const drawClickedChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
-  ctx.save();
+const drawClickedChart = (
+  ctx: CanvasRenderingContext2D,
+  model: LineChartModel
+) => {
+  const { w, h } = model.options.rect;
+  const { clickedPoints } = model;
+
+  const chart = new Path2D();
+  chart.rect(CHART_SETTINGS.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
+  ctx.clip(chart, 'evenodd');
   ctx.beginPath();
 
-  points.map(({ x, y }, index) => {
+  clickedPoints.map(({ x, y }, index) => {
     if (index === 0) {
       ctx.moveTo(x, y);
     }
@@ -107,53 +138,10 @@ const drawClickedChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
     ctx.fill(circle);
   });
   ctx.stroke();
-  ctx.restore();
-};
-
-const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
-  const { x, y, w, h } = model.options.rect;
-
-  ctx.clearRect(
-    0,
-    0,
-    w + CHART_SETTINGS.PADDING.HORIZONTAL,
-    h + CHART_SETTINGS.PADDING.VERTICAL
-  );
-
-  drawTickX(ctx, model.options);
-  drawTickY(ctx, model.options);
-
-  drawVerticalLine(ctx, x, y, h);
-  drawHorizontalLine(ctx, h, x, w);
-
-  ctx.save();
-  const chart = new Path2D();
-  chart.rect(CHART_SETTINGS.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
-  ctx.clip(chart, 'evenodd');
-
-  drawChart(ctx, model.points);
-  drawClickedChart(ctx, model.clickedPoints);
-  ctx.restore();
-};
-
-const copyDraw = (
-  ctx: CanvasRenderingContext2D,
-  target: HTMLCanvasElement,
-  model: LineChartModel
-) => {
-  const dpr = window.devicePixelRatio || 1;
-  const { w, h } = model.options.rect;
-
-  ctx.clearRect(
-    0,
-    0,
-    (w + CHART_SETTINGS.PADDING.HORIZONTAL) * dpr,
-    (h + CHART_SETTINGS.PADDING.VERTICAL) * dpr
-  );
-  ctx.drawImage(target, 0, 0);
 };
 
 export default {
-  draw,
-  copyDraw,
+  drawGrid,
+  drawChart,
+  drawClickedChart,
 };

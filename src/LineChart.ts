@@ -8,7 +8,7 @@ import type { ChartOptions } from './types/Chart';
 import type { Datum } from './types/Data';
 
 import createCanvasElement from './utils/domain/createCanvasElement';
-import EVENT from './constants/event';
+import { MOUSE_EVENT, RENDER_TYPE } from './constants/event';
 import CHART_SETTINGS from './constants/chartSettings';
 
 class LineChart {
@@ -55,7 +55,7 @@ class LineChart {
     this.bindEvents();
 
     this.model.addInitialData(datum);
-    this.controller.paint();
+    this.view.preRender(this.model);
   };
 
   updateData = (datum: Datum) => {
@@ -64,23 +64,17 @@ class LineChart {
   };
 
   bindEvents = () => {
-    // 마우스 이동 이벤트
+    // 마우스 이동 이벤트 => crossHair -> X
     this.wrapper.addEventListener('mousemove', (event) => {
       this.crosshair.findNearestPoint(event);
       this.crosshair.render();
     });
+    // 마우스 오른쪽 클릭(메뉴 모음) 이벤트 => X
+    this.wrapper.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
 
-    // 마우스 휠 이벤트
-    this.wrapper.addEventListener(
-      'wheel',
-      (event) => {
-        this.model.setAxisY(event.deltaY > 0 ? EVENT.ZOOM_OUT : EVENT.ZOOM_IN);
-        this.redrawChart();
-      },
-      { passive: true }
-    );
-
-    // 마우스 왼쪽, 오른쪽 이벤트
+    // 마우스 왼쪽, 오른쪽 이벤트 => clickedChart
     this.wrapper.addEventListener('mousedown', (event) => {
       event.preventDefault();
       const isLeftClick = event.button === 0;
@@ -97,15 +91,18 @@ class LineChart {
         );
         this.model.deleteClickedPoint(index);
       }
-      this.controller.paint();
+      this.view.render(RENDER_TYPE.CLICKED_CHART, this.model);
     });
 
-    // 마우스 오른쪽 클릭(메뉴 모음) 이벤트
-    this.wrapper.addEventListener('contextmenu', (event) => {
-      event.preventDefault();
+    // 마우스 휠 이벤트 => 전체
+    this.wrapper.addEventListener('wheel', (event) => {
+      this.model.setAxisY(
+        event.deltaY > 0 ? MOUSE_EVENT.ZOOM_OUT : MOUSE_EVENT.ZOOM_IN
+      );
+      this.redrawChart();
     });
 
-    // 화면 비율 (반응형) 이벤트
+    // 화면 비율 (반응형) 이벤트 => 전체
     window.addEventListener('resize', () => {
       const { innerWidth } = window;
       const PADDING = 16;
@@ -152,7 +149,7 @@ class LineChart {
   redrawChart = () => {
     const points = this.controller.formatPoints(this.model.datas);
     this.model.setPoints(points);
-    this.controller.paint();
+    this.view.render(RENDER_TYPE.ALL, this.model);
   };
 }
 

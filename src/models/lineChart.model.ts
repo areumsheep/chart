@@ -2,7 +2,7 @@ import type { Datum } from '../types/Data';
 import type { ChartOptions, Point } from '../types/Chart';
 
 import CHART_SETTINGS from '../constants/chartSettings';
-import EVENT, { type EventKey } from '../constants/event';
+import { MOUSE_EVENT, type MouseEventKey } from '../constants/event';
 import { binarySearch } from '../utils/search';
 
 const MAX_END_POINT_COUNT = 2;
@@ -59,7 +59,7 @@ class LineChartModel {
   setHeight = (height: number) => {
     this.options.rect.h = height;
   };
-  setAxisY = (type: EventKey) => {
+  setAxisY = (type: MouseEventKey) => {
     const {
       min,
       max,
@@ -68,7 +68,7 @@ class LineChartModel {
     } = this.options.axisY;
 
     let point = end;
-    if (type === EVENT.ZOOM_IN) {
+    if (type === MOUSE_EVENT.ZOOM_IN) {
       point += tick;
     } else {
       point -= tick;

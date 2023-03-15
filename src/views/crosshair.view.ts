@@ -1,15 +1,14 @@
-import type { Point, Rect } from '../types/Chart';
+import LineChartModel from '../models/lineChart.model';
 
+import type { Point, Rect } from '../types/Chart';
 import CHART_SETTINGS from '../constants/chartSettings';
-import { binarySearch } from '../utils/search';
 
 import {
-  drawVerticalLine,
   LineStyle,
   setLineStyle,
+  drawVerticalLine,
 } from '../renderers/drawLine';
 import { drawCircle } from '../renderers/drawMarker';
-import LineChartModel from '../models/lineChart.model';
 
 class CrossHair {
   canvas = document.createElement('canvas');
