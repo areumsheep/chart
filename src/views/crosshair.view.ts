@@ -1,40 +1,59 @@
-import LineChartController from '../controllers/lineChart.controller';
-import { Point, Rect } from '../types/LineChart';
-import CanvasDrawHelper from '../utils/canvasDrawHelper';
+import type { Point, Rect } from '../types/LineChart';
+
+import CHART from '../constants/chart';
+import { binarySearch } from '../utils/search';
+
+import {
+  drawVerticalLine,
+  LineStyle,
+  setLineStyle,
+} from '../renderers/drawLine';
+import { drawCircle } from '../renderers/drawMarker';
+import LineChartModel from '../models/lineChart.model';
 
 class CrossHair {
-  crossHair = document.createElement('canvas');
+  canvas = document.createElement('canvas');
   ctx: CanvasRenderingContext2D;
   canvasWidth: number;
   canvasHeight: number;
 
-  controller?: LineChartController;
+  model: LineChartModel;
+  nearestPoint?: Point;
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.crossHair = canvas;
-    this.ctx = this.crossHair.getContext('2d')!;
+  constructor(canvas: HTMLCanvasElement, model: LineChartModel) {
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d')!;
     this.canvasWidth = canvas.width;
     this.canvasHeight = canvas.height;
+
+    this.model = model;
   }
 
-  setController = (controller: LineChartController) => {
-    this.controller = controller;
-  };
-
-  getNearestPoint = (event: MouseEvent) => {
-    const rect = this.crossHair.getBoundingClientRect();
+  findNearestPoint = (event: MouseEvent) => {
+    const rect = this.canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
 
-    return this.controller?.findNearestPoint(mouseX);
+    const nearestIndex = binarySearch(this.model.points, mouseX, 'x');
+    this.nearestPoint = this.model.points[nearestIndex];
   };
 
-  render = (nearestPoint: Point) => {
+  render = () => {
+    if (!this.nearestPoint) return;
+
     const rect: Rect = {
-      ...nearestPoint,
-      w: this.crossHair.width,
-      h: this.crossHair.height,
+      ...this.nearestPoint,
+      w: this.canvas.width,
+      h: this.canvas.height,
     };
-    CanvasDrawHelper.drawCrossHair(this.ctx, rect);
+    this.#drawCrossHair(this.ctx, rect);
+  };
+
+  #drawCrossHair = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
+    ctx.clearRect(0, 0, w, h);
+
+    setLineStyle(ctx, LineStyle.LargeDashed);
+    drawVerticalLine(ctx, x, CHART.PADDING.HORIZONTAL, h);
+    drawCircle(ctx, x, y, 5);
   };
 }
 

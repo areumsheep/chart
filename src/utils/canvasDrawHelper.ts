@@ -163,30 +163,8 @@ const copyDraw = (
   ctx.drawImage(target, 0, 0);
 };
 
-const drawCrossHair = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
-  ctx.clearRect(0, 0, w, h);
-
-  ctx.beginPath();
-  ctx.save();
-  ctx.setLineDash([1]);
-
-  ctx.moveTo(x, CHART.PADDING.HORIZONTAL);
-  ctx.lineTo(x, h);
-
-  ctx.stroke();
-  ctx.restore();
-
-  const circle = new Path2D();
-  circle.arc(x, y, 4, 0, 2 * Math.PI);
-
-  ctx.fillStyle = COLOR.darkblue;
-  ctx.fill(circle);
-};
-
 export default {
   draw,
   drawLine,
-  drawCrossHair,
-
   copyDraw,
 };

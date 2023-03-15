@@ -44,15 +44,11 @@ class LineChart {
 
     $target.insertAdjacentElement('afterbegin', this.wrapper);
 
-    this.crosshair = new CrossHair(crosshairCanvas);
-
     this.view = new LineChartView(displayCanvas);
     this.model = new LineChartModel(options);
-    this.controller = new LineChartController(
-      this.view,
-      this.model,
-      this.crosshair
-    );
+    this.controller = new LineChartController(this.view, this.model);
+
+    this.crosshair = new CrossHair(crosshairCanvas, this.model);
   }
 
   initData = (datum: Datum) => {
@@ -69,10 +65,8 @@ class LineChart {
 
   bindEvents = () => {
     this.wrapper.addEventListener('mousemove', (event) => {
-      const nearestPoint = this.crosshair.getNearestPoint(event);
-      if (nearestPoint) {
-        this.crosshair.render(nearestPoint);
-      }
+      this.crosshair.findNearestPoint(event);
+      this.crosshair.render();
     });
 
     this.wrapper.addEventListener(
