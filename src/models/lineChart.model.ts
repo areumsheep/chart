@@ -1,7 +1,7 @@
 import type { Datum } from '../types/Data';
-import type { ChartOptions, Point } from '../types/LineChart';
+import type { ChartOptions, Point } from '../types/Chart';
 
-import CHART from '../constants/chart';
+import CHART_SETTINGS from '../constants/chartSettings';
 import EVENT, { type EventKey } from '../constants/event';
 
 const MAX_END_POINT_COUNT = 2;
@@ -23,10 +23,10 @@ class LineChartModel {
     this.options = {
       ...options,
       rect: {
-        x: CHART.PADDING.HORIZONTAL,
-        y: CHART.PADDING.VERTICAL,
-        w: options.rect.w - CHART.PADDING.HORIZONTAL,
-        h: options.rect.h - CHART.PADDING.VERTICAL,
+        x: CHART_SETTINGS.PADDING.HORIZONTAL,
+        y: CHART_SETTINGS.PADDING.VERTICAL,
+        w: options.rect.w - CHART_SETTINGS.PADDING.HORIZONTAL,
+        h: options.rect.h - CHART_SETTINGS.PADDING.VERTICAL,
       },
       axisY: {
         ...options.axisY,

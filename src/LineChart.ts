@@ -4,12 +4,12 @@ import LineChartController from './controllers/lineChart.controller';
 
 import CrossHair from './views/crosshair.view';
 
-import type { ChartOptions } from './types/LineChart';
+import type { ChartOptions } from './types/Chart';
 import type { Datum } from './types/Data';
 
 import createCanvasElement from './utils/createCanvasElement';
 import EVENT from './constants/event';
-import CHART from './constants/chart';
+import CHART_SETTINGS from './constants/chartSettings';
 
 class LineChart {
   wrapper: HTMLElement;
@@ -119,7 +119,7 @@ class LineChart {
       this.crosshairCanvas.width = width * dpr;
       this.crosshairCanvas.style.width = `${width}px`;
 
-      const chartWidth = width - CHART.PADDING.HORIZONTAL;
+      const chartWidth = width - CHART_SETTINGS.PADDING.HORIZONTAL;
       this.model.setWidth(chartWidth);
     }
     if (height) {
@@ -130,7 +130,7 @@ class LineChart {
       this.crosshairCanvas.height = height * dpr;
       this.crosshairCanvas.style.height = `${height}px`;
 
-      const chartHeight = height - CHART.PADDING.VERTICAL;
+      const chartHeight = height - CHART_SETTINGS.PADDING.VERTICAL;
       this.model.setHeight(chartHeight);
     }
 

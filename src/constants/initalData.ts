@@ -1,4 +1,4 @@
-import { ChartOptions } from '../types/LineChart';
+import { ChartOptions } from '../types/Chart';
 
 export const initialData: ChartOptions = {
   rect: {

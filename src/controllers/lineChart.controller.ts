@@ -1,8 +1,8 @@
 import LineChartView from '../views/lineChart.view';
 import LineChartModel from '../models/lineChart.model';
-import CHART from '../constants/chart';
+import CHART_SETTINGS from '../constants/chartSettings';
 import type { Datum } from '../types/Data';
-import type { Point } from '../types/LineChart';
+import type { Point } from '../types/Chart';
 
 import { binarySearch } from '../utils/search';
 
@@ -25,11 +25,13 @@ class LineChartController {
     } = this.model.options.axisX;
 
     const xTickCount = (end - start) / tick;
-    const bandWidthX = Math.floor((w - CHART.PADDING.VERTICAL) / xTickCount);
+    const bandWidthX = Math.floor(
+      (w - CHART_SETTINGS.PADDING.VERTICAL) / xTickCount
+    );
 
     const timePoint = (time - start) / tick;
     const xPoint =
-      Math.floor(timePoint * bandWidthX + CHART.PADDING.VERTICAL) - 1;
+      Math.floor(timePoint * bandWidthX + CHART_SETTINGS.PADDING.VERTICAL) - 1;
 
     return xPoint;
   };
@@ -42,7 +44,9 @@ class LineChartController {
     } = this.model.options.axisY;
 
     const tickCount = end / tick;
-    const bandWidth = Math.floor((h - CHART.PADDING.VERTICAL) / tickCount);
+    const bandWidth = Math.floor(
+      (h - CHART_SETTINGS.PADDING.VERTICAL) / tickCount
+    );
 
     const yPoint = Math.floor(h - (value / end) * bandWidth * tickCount);
 

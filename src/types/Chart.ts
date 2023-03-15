@@ -1,4 +1,3 @@
-import COLOR from '../constants/color';
 export interface ChartOptions {
   rect: Rect;
   axisX: {
@@ -29,9 +28,3 @@ export interface Rect {
   w: number;
   h: number;
 }
-export interface LineStyle {
-  color: keyof typeof COLOR;
-  dashStyle: [number, number];
-}
-
-export type PartialLineStyle = Partial<LineStyle>;

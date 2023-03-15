@@ -1,4 +1,4 @@
-const CHART = {
+const CHART_SETTINGS = {
   PADDING: {
     /** 위 아래 */
     VERTICAL: 17,
@@ -8,4 +8,4 @@ const CHART = {
   },
 };
 
-export default CHART;
+export default CHART_SETTINGS;

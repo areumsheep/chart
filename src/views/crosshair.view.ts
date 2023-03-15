@@ -1,6 +1,6 @@
-import type { Point, Rect } from '../types/LineChart';
+import type { Point, Rect } from '../types/Chart';
 
-import CHART from '../constants/chart';
+import CHART_SETTINGS from '../constants/chartSettings';
 import { binarySearch } from '../utils/search';
 
 import {
@@ -52,7 +52,7 @@ class CrossHair {
     ctx.clearRect(0, 0, w, h);
 
     setLineStyle(ctx, LineStyle.LargeDashed);
-    drawVerticalLine(ctx, x, CHART.PADDING.HORIZONTAL, h);
+    drawVerticalLine(ctx, x, CHART_SETTINGS.PADDING.HORIZONTAL, h);
     drawCircle(ctx, x, y, 5);
   };
 }

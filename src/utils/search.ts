@@ -1,4 +1,4 @@
-import { Point } from '../types/LineChart';
+import { Point } from '../types/Chart';
 
 export const binarySearch = (
   data: Point[],

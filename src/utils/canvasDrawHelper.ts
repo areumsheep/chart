@@ -1,23 +1,12 @@
-import CHART from '../constants/chart';
+import CHART_SETTINGS from '../constants/chartSettings';
 import COLOR from '../constants/color';
 import LineChartModel from '../models/lineChart.model';
-import type {
-  Rect,
-  ChartOptions,
-  PartialLineStyle,
-  Point,
-} from '../types/LineChart';
+import type { Rect, ChartOptions, Point } from '../types/Chart';
 
 import { formatDate } from './formatDate';
 
-const drawLine = (
-  ctx: CanvasRenderingContext2D,
-  { x, y, w, h }: Rect,
-  lineStyle?: PartialLineStyle
-) => {
+const drawLine = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
   ctx.beginPath();
-  ctx.setLineDash(lineStyle?.dashStyle || []);
-  ctx.strokeStyle = lineStyle?.color || 'black';
   ctx.moveTo(x, y);
   ctx.lineTo(w, h);
   ctx.stroke();
@@ -36,18 +25,20 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
 
   let current = start - (start % tick);
   const tickCount = (end - start) / tick;
-  const bandWidth = Math.floor((w - CHART.PADDING.VERTICAL) / tickCount);
+  const bandWidth = Math.floor(
+    (w - CHART_SETTINGS.PADDING.VERTICAL) / tickCount
+  );
 
   while (current <= end) {
     const timePoint = (current - start) / tick;
 
     const xPoint =
-      Math.floor(timePoint * bandWidth + CHART.PADDING.VERTICAL) - 1;
+      Math.floor(timePoint * bandWidth + CHART_SETTINGS.PADDING.VERTICAL) - 1;
 
     const text = formatDate(format, new Date(current));
     current += tick;
 
-    if (xPoint < CHART.PADDING.VERTICAL) continue;
+    if (xPoint < CHART_SETTINGS.PADDING.VERTICAL) continue;
     drawLine(ctx, { x: xPoint, y: h, w: xPoint, h: h + 5 });
     ctx.font = '12px arial';
     ctx.fillText(text, xPoint, h + 15);
@@ -67,18 +58,21 @@ const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   ctx.textAlign = 'right';
 
   const tickCount = end / tick;
-  const bandWidth = Math.floor((h - CHART.PADDING.VERTICAL) / tickCount);
+  const bandWidth = Math.floor(
+    (h - CHART_SETTINGS.PADDING.VERTICAL) / tickCount
+  );
 
   for (let i = start; i <= end; i += tick) {
     const yPoint = Math.floor(h - (i / end) * bandWidth * tickCount);
-    ctx.fillText(`${i}`, CHART.PADDING.VERTICAL, yPoint);
+    ctx.fillText(`${i}`, CHART_SETTINGS.PADDING.VERTICAL, yPoint);
 
     if (i !== 0) {
-      drawLine(
-        ctx,
-        { x: CHART.PADDING.HORIZONTAL, y: yPoint, w, h: yPoint },
-        { dashStyle: [2, 2], color: 'lightgray' }
-      );
+      drawLine(ctx, {
+        x: CHART_SETTINGS.PADDING.HORIZONTAL,
+        y: yPoint,
+        w,
+        h: yPoint,
+      });
     }
   }
   ctx.stroke();
@@ -128,7 +122,12 @@ const drawClickedChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
 const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   const { x, y, w, h } = model.options.rect;
 
-  ctx.clearRect(0, 0, w + CHART.PADDING.HORIZONTAL, h + CHART.PADDING.VERTICAL);
+  ctx.clearRect(
+    0,
+    0,
+    w + CHART_SETTINGS.PADDING.HORIZONTAL,
+    h + CHART_SETTINGS.PADDING.VERTICAL
+  );
 
   drawTickX(ctx, model.options);
   drawTickY(ctx, model.options);
@@ -138,7 +137,7 @@ const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
 
   ctx.save();
   const chart = new Path2D();
-  chart.rect(CHART.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
+  chart.rect(CHART_SETTINGS.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
   ctx.clip(chart, 'evenodd');
 
   drawChart(ctx, model.points);
@@ -157,8 +156,8 @@ const copyDraw = (
   ctx.clearRect(
     0,
     0,
-    (w + CHART.PADDING.HORIZONTAL) * dpr,
-    (h + CHART.PADDING.VERTICAL) * dpr
+    (w + CHART_SETTINGS.PADDING.HORIZONTAL) * dpr,
+    (h + CHART_SETTINGS.PADDING.VERTICAL) * dpr
   );
   ctx.drawImage(target, 0, 0);
 };
