@@ -1,9 +1,7 @@
-import { Point } from '../types/Chart';
-
-export const binarySearch = (
-  data: Point[],
+export const binarySearch = <T>(
+  data: T[],
   target: number,
-  property: keyof Point
+  property: keyof T
 ) => {
   let low = 0;
   let high = data.length - 1;

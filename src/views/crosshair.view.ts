@@ -33,8 +33,12 @@ class CrossHair {
     const rect = this.canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
 
-    const nearestIndex = binarySearch(this.model.points, mouseX, 'x');
-    this.nearestPoint = this.model.points[nearestIndex];
+    const index = this.model.findNearestPointIndex(
+      this.model.points,
+      mouseX,
+      'x'
+    );
+    this.nearestPoint = this.model.points[index];
   };
 
   render = () => {

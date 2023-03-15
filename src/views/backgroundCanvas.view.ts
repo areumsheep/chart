@@ -1,7 +1,7 @@
 import LineChartModel from '../models/lineChart.model';
 import CanvasDrawHelper from '../utils/canvasDrawHelper';
 
-import createCanvasElement from '../utils/createCanvasElement';
+import createCanvasElement from '../utils/domain/createCanvasElement';
 
 class BackgroundCanvas {
   backgroundCanvas: HTMLCanvasElement;

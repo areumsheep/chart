@@ -3,6 +3,7 @@ import type { ChartOptions, Point } from '../types/Chart';
 
 import CHART_SETTINGS from '../constants/chartSettings';
 import EVENT, { type EventKey } from '../constants/event';
+import { binarySearch } from '../utils/search';
 
 const MAX_END_POINT_COUNT = 2;
 class LineChartModel {
@@ -36,29 +37,28 @@ class LineChartModel {
     };
   }
 
-  setInitialData = (datum: Datum) => {
+  addInitialData = (datum: Datum) => {
     this.datas.push(datum);
   };
-
-  getUpdateData = (datum: Datum) => {
+  addUpdateData = (datum: Datum) => {
     this.datas.push(datum);
 
-    this.options = {
-      ...this.options,
-      axisX: {
-        ...this.options.axisX,
-        range: {
-          start: Date.now() - 60 * 5 * 1000,
-          end: Date.now(),
-        },
-      },
-    };
+    this.options.axisX.range.start = Date.now() - 60 * 5 * 1000;
+    this.options.axisX.range.end = Date.now();
+  };
+  addClickedPoint = (point: Point) => {
+    this.clickedPoints.push(point);
   };
 
   setPoints = (points: Point[]) => {
     this.points = points;
   };
-
+  setWidth = (width: number) => {
+    this.options.rect.w = width;
+  };
+  setHeight = (height: number) => {
+    this.options.rect.h = height;
+  };
   setAxisY = (type: EventKey) => {
     const {
       min,
@@ -80,20 +80,16 @@ class LineChartModel {
     this.options.axisY.range.end = point;
   };
 
-  setWidth = (width: number) => {
-    this.options.rect.w = width;
-  };
-
-  setHeight = (height: number) => {
-    this.options.rect.h = height;
-  };
-
-  addClickedPoint = (point: Point) => {
-    this.clickedPoints.push(point);
-  };
-
   deleteClickedPoint = (index: number) => {
     this.clickedPoints.splice(index, 1);
+  };
+
+  findNearestPointIndex = <T = Point>(
+    target: T[],
+    point: number,
+    property: keyof T
+  ) => {
+    return binarySearch<T>(target, point, property);
   };
 }
 

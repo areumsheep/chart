@@ -7,7 +7,7 @@ import CrossHair from './views/crosshair.view';
 import type { ChartOptions } from './types/Chart';
 import type { Datum } from './types/Data';
 
-import createCanvasElement from './utils/createCanvasElement';
+import createCanvasElement from './utils/domain/createCanvasElement';
 import EVENT from './constants/event';
 import CHART_SETTINGS from './constants/chartSettings';
 
@@ -54,12 +54,12 @@ class LineChart {
   initData = (datum: Datum) => {
     this.bindEvents();
 
-    this.model.setInitialData(datum);
-    this.controller.updateModel();
+    this.model.addInitialData(datum);
+    this.controller.paint();
   };
 
   updateData = (datum: Datum) => {
-    this.model.getUpdateData(datum);
+    this.model.addUpdateData(datum);
     this.redrawChart();
   };
 
@@ -97,10 +97,14 @@ class LineChart {
         this.model.addClickedPoint({ x: event.clientX, y: event.clientY });
       }
       if (event.button === 3 || event.button === 2) {
-        const index = this.controller.findNearestClickedPoint(event.clientX);
+        const index = this.model.findNearestPointIndex(
+          this.model.clickedPoints,
+          event.clientX,
+          'x'
+        );
         this.model.deleteClickedPoint(index);
       }
-      this.controller.updateModel();
+      this.controller.paint();
     });
 
     this.wrapper.addEventListener('contextmenu', (event) => {
@@ -141,7 +145,7 @@ class LineChart {
   redrawChart = () => {
     const points = this.controller.formatPoints(this.model.datas);
     this.model.setPoints(points);
-    this.controller.updateModel();
+    this.controller.paint();
   };
 }
 

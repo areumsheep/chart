@@ -56,7 +56,7 @@ class LineChartController {
     return nearestIndex;
   };
 
-  updateModel = () => {
+  paint = () => {
     requestAnimationFrame(() => {
       this.view.render(this.model);
     });
