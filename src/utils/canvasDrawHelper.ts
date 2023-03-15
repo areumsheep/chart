@@ -87,6 +87,7 @@ const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
 
 const drawChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
   ctx.save();
+
   ctx.beginPath();
 
   points.map(({ x, y }, index) => {
@@ -98,6 +99,7 @@ const drawChart = (ctx: CanvasRenderingContext2D, points: Point[]) => {
     ctx.lineTo(x, y);
   });
   ctx.stroke();
+
   ctx.restore();
 };
 
@@ -134,8 +136,14 @@ const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   drawLine(ctx, { x, y, w: x, h });
   drawLine(ctx, { x, y: h, w, h });
 
+  ctx.save();
+  const chart = new Path2D();
+  chart.rect(CHART.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
+  ctx.clip(chart, 'evenodd');
+
   drawChart(ctx, model.points);
   drawClickedChart(ctx, model.clickedPoints);
+  ctx.restore();
 };
 
 const copyDraw = (
