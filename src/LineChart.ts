@@ -10,11 +10,13 @@ import type { Datum } from './types/Data';
 import createCanvasElement from './utils/domain/createCanvasElement';
 import { MOUSE_EVENT, RENDER_TYPE } from './constants/event';
 import CHART_SETTINGS from './constants/chartSettings';
+import getPixelRatio from './utils/domain/getPixelRatio';
 
 class LineChart {
   wrapper: HTMLElement;
-  targetWidth: number;
-  targetHeight: number;
+  chartWidth: number;
+  chartHeight: number;
+  chartDPR: number;
 
   displayCanvas: HTMLCanvasElement;
   crosshairCanvas: HTMLCanvasElement;
@@ -31,8 +33,9 @@ class LineChart {
     wrapper.style.width = `${w}px`;
     wrapper.style.height = `${h}px`;
     this.wrapper = wrapper;
-    this.targetWidth = w;
-    this.targetHeight = h;
+    this.chartWidth = w;
+    this.chartHeight = h;
+    this.chartDPR = getPixelRatio();
 
     const displayCanvas = createCanvasElement(w, h, 1);
     const crosshairCanvas = createCanvasElement(w, h);
@@ -104,20 +107,24 @@ class LineChart {
 
     // 화면 비율 (반응형) 이벤트 => 전체
     window.addEventListener('resize', () => {
-      const { innerWidth } = window;
-      const PADDING = 16;
-      const changeWidth = innerWidth - PADDING;
+      const { innerWidth, innerHeight } = window;
+      const { HORIZONTAL, VERTICAL } = CHART_SETTINGS.PADDING;
+      const FORM_HEIGHT = 130;
 
-      if (changeWidth < this.targetWidth) {
-        this.changeSize(changeWidth);
-      } else {
-        this.changeSize(this.targetWidth);
-      }
+      const changeWidth = innerWidth - HORIZONTAL;
+      const changeHeight = innerHeight - VERTICAL - FORM_HEIGHT;
+
+      const targetWidth =
+        changeWidth < this.chartWidth ? changeWidth : this.chartWidth;
+      const targetHeight =
+        changeHeight < this.chartHeight ? changeHeight : this.chartHeight;
+
+      this.changeSize(targetWidth, targetHeight);
     });
   };
 
   changeSize = (width?: number, height?: number) => {
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = this.chartDPR;
 
     if (width) {
       this.wrapper.style.width = `${width}px`;
@@ -149,7 +156,7 @@ class LineChart {
   redrawChart = () => {
     const points = this.controller.formatPoints(this.model.datas);
     this.model.setPoints(points);
-    this.view.render(RENDER_TYPE.ALL, this.model);
+    this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
   };
 }
 

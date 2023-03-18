@@ -3,6 +3,7 @@ import LineChartController from '../controllers/lineChart.controller';
 
 import CanvasDrawHelper from '../utils/canvasDrawHelper';
 import createCanvasElement from '../utils/domain/createCanvasElement';
+import getPixelRatio from '../utils/domain/getPixelRatio';
 
 import CHART_SETTINGS from '../constants/chartSettings';
 import { RENDER_TYPE, type RenderTypeKey } from '../constants/event';
@@ -60,11 +61,12 @@ class LineChartView {
     this.ctx.drawImage(this.secondChartCanvas, 0, 0);
   }
 
-  render(type: RenderTypeKey, model: LineChartModel) {
+  render(type: RenderTypeKey, model: LineChartModel, ratio?: number) {
+    const dpr = ratio || getPixelRatio();
     const { w, h } = model.options.rect;
     const { HORIZONTAL, VERTICAL } = CHART_SETTINGS.PADDING;
 
-    this.ctx.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
+    this.ctx.clearRect(0, 0, w * dpr + HORIZONTAL, h * dpr + VERTICAL * 2);
 
     if (type === RENDER_TYPE.CLICKED_CHART) {
       this.secondChartContext.clearRect(0, 0, w, h);

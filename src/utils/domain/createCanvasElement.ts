@@ -1,5 +1,7 @@
+import getPixelRatio from './getPixelRatio';
+
 const createCanvasElement = (width: number, height: number, ratio?: number) => {
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = getPixelRatio();
 
   const canvas = document.createElement('canvas');
   canvas.style.position = 'absolute';
