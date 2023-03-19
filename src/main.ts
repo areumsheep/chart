@@ -7,22 +7,27 @@ const $form = $<HTMLFormElement>('#resize-form');
 const $widthInput = $<HTMLInputElement>('#width-input');
 const $heightInput = $<HTMLInputElement>('#height-input');
 
-const lineChart = new LineChart($app, initialData);
 $widthInput.value = `${initialData.rect.w}`;
 $heightInput.value = `${initialData.rect.h}`;
 
-document.addEventListener('DOMContentLoaded', () => {
-  lineChart.initData({
-    time: Date.now(),
-    value: Math.random() * 100,
-  });
+const lineChart = new LineChart($app, initialData);
 
-  window.setInterval(() => {
-    lineChart.updateData({
-      time: Date.now(),
-      value: Math.random() * 100,
-    });
-  }, 5000);
+const randomPoint = () => {
+  return {
+    time: Date.now(),
+    value: Math.random() * initialData.yAxis.range.end,
+  };
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  lineChart.initData(randomPoint());
+
+  const { refreshTime } = initialData;
+  if (refreshTime) {
+    window.setInterval(() => {
+      lineChart.updateData(randomPoint());
+    }, refreshTime);
+  }
 });
 
 $form.addEventListener('submit', (event) => {

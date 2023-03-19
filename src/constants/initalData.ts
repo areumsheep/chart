@@ -7,7 +7,19 @@ export const initialData: ChartOptions = {
     w: 700,
     h: 500,
   },
-  axisX: {
+  refreshTime: 5 * 100,
+  datasets: [
+    {
+      type: 'line',
+      data: [],
+    },
+    {
+      type: 'line',
+      handler: 'click',
+    },
+  ],
+  xAxis: {
+    type: 'time',
     format: 'HH:mm',
     tick: 60 * 1000,
     range: {
@@ -15,11 +27,14 @@ export const initialData: ChartOptions = {
       end: Date.now(),
     },
   },
-  axisY: {
+  yAxis: {
+    type: 'value',
     tick: 10,
     range: {
       start: 0,
       end: 100,
+      min: 10,
+      max: 200,
     },
   },
 };
