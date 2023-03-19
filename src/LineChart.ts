@@ -32,6 +32,7 @@ class LineChart {
     const wrapper = document.createElement('div');
     wrapper.style.width = `${w}px`;
     wrapper.style.height = `${h}px`;
+    wrapper.style.position = 'relative';
     this.wrapper = wrapper;
     this.chartWidth = w;
     this.chartHeight = h;
