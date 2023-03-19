@@ -7,19 +7,18 @@ import {
 import CHART_SETTINGS from '../constants/chartSettings';
 import COLOR from '../constants/color';
 import LineChartModel from '../models/lineChart.model';
-import type { ChartOptions, Point } from '../types/Chart';
 
 import { formatDate } from './formatDate';
 import { formatX, formatY } from './domain/formatDataToPoint';
 
 /** x축 라벨 출력 */
-const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
-  const { w, h } = options.rect;
+const drawAxisX = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
+  const { x, y, w, h } = model.options.rect;
   const {
     tick,
     format,
     range: { start, end },
-  } = options.axisX;
+  } = model.options.axisX;
 
   ctx.save();
   ctx.textAlign = 'center';
@@ -38,18 +37,22 @@ const drawTickX = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
     ctx.font = '12px arial';
     ctx.fillText(text, xPoint, h + 15);
   }
+
+  drawVerticalLine(ctx, x, y, h);
   ctx.restore();
 };
 
 /** y축 라벨 출력 */
-const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
-  const { w, h } = options.rect;
+const drawAxisY = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
+  const { x, w, h } = model.options.rect;
   const {
     tick,
     range: { start, end },
-  } = options.axisY;
+  } = model.options.axisY;
 
   ctx.save();
+  drawHorizontalLine(ctx, h, x, w);
+
   ctx.beginPath();
   ctx.textAlign = 'right';
 
@@ -68,23 +71,6 @@ const drawTickY = (ctx: CanvasRenderingContext2D, options: ChartOptions) => {
   }
   ctx.stroke();
   ctx.restore();
-};
-
-const drawGrid = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
-  const { x, y, w, h } = model.options.rect;
-
-  ctx.clearRect(
-    0,
-    0,
-    w + CHART_SETTINGS.PADDING.HORIZONTAL,
-    h + CHART_SETTINGS.PADDING.VERTICAL
-  );
-
-  drawTickX(ctx, model.options);
-  drawTickY(ctx, model.options);
-
-  drawVerticalLine(ctx, x, y, h);
-  drawHorizontalLine(ctx, h, x, w);
 };
 
 const drawChart = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
@@ -140,8 +126,13 @@ const drawClickedChart = (
   ctx.stroke();
 };
 
+const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
+  drawChart(ctx, model);
+  drawClickedChart(ctx, model);
+};
+
 export default {
-  drawGrid,
-  drawChart,
-  drawClickedChart,
+  draw,
+  drawAxisX,
+  drawAxisY,
 };

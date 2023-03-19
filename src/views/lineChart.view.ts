@@ -15,14 +15,14 @@ class LineChartView {
   canvasHeight: number;
   controller?: LineChartController;
 
-  gridCanvas: HTMLCanvasElement;
-  gridContext: CanvasRenderingContext2D;
+  xAxisCanvas: HTMLCanvasElement;
+  xAxisContext: CanvasRenderingContext2D;
 
-  firstChartCanvas: HTMLCanvasElement;
-  firstChartContext: CanvasRenderingContext2D;
+  yAxisCanvas: HTMLCanvasElement;
+  yAxisContext: CanvasRenderingContext2D;
 
-  secondChartCanvas: HTMLCanvasElement;
-  secondChartContext: CanvasRenderingContext2D;
+  chartCanvas: HTMLCanvasElement;
+  chartContext: CanvasRenderingContext2D;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -31,20 +31,14 @@ class LineChartView {
     this.canvasWidth = canvas.width;
     this.canvasHeight = canvas.height;
 
-    this.gridCanvas = createCanvasElement(this.canvasWidth, this.canvasHeight);
-    this.gridContext = this.gridCanvas.getContext('2d')!;
+    this.xAxisCanvas = createCanvasElement(this.canvasWidth, this.canvasHeight);
+    this.xAxisContext = this.xAxisCanvas.getContext('2d')!;
 
-    this.firstChartCanvas = createCanvasElement(
-      this.canvasWidth,
-      this.canvasHeight
-    );
-    this.firstChartContext = this.firstChartCanvas.getContext('2d')!;
+    this.yAxisCanvas = createCanvasElement(this.canvasWidth, this.canvasHeight);
+    this.yAxisContext = this.yAxisCanvas.getContext('2d')!;
 
-    this.secondChartCanvas = createCanvasElement(
-      this.canvasWidth,
-      this.canvasHeight
-    );
-    this.secondChartContext = this.secondChartCanvas.getContext('2d')!;
+    this.chartCanvas = createCanvasElement(this.canvasWidth, this.canvasHeight);
+    this.chartContext = this.chartCanvas.getContext('2d')!;
   }
 
   setController = (controller: LineChartController) => {
@@ -52,13 +46,13 @@ class LineChartView {
   };
 
   preRender(model: LineChartModel) {
-    CanvasDrawHelper.drawGrid(this.gridContext, model);
-    CanvasDrawHelper.drawChart(this.firstChartContext, model);
-    CanvasDrawHelper.drawClickedChart(this.secondChartContext, model);
+    CanvasDrawHelper.drawAxisX(this.xAxisContext, model);
+    CanvasDrawHelper.drawAxisY(this.yAxisContext, model);
+    CanvasDrawHelper.draw(this.chartContext, model);
 
-    this.ctx.drawImage(this.gridCanvas, 0, 0);
-    this.ctx.drawImage(this.firstChartCanvas, 0, 0);
-    this.ctx.drawImage(this.secondChartCanvas, 0, 0);
+    this.ctx.drawImage(this.xAxisCanvas, 0, 0);
+    this.ctx.drawImage(this.yAxisCanvas, 0, 0);
+    this.ctx.drawImage(this.chartCanvas, 0, 0);
   }
 
   render(type: RenderTypeKey, model: LineChartModel, ratio?: number) {
@@ -69,18 +63,21 @@ class LineChartView {
     this.ctx.clearRect(0, 0, w * dpr + HORIZONTAL, h * dpr + VERTICAL * 2);
 
     if (type === RENDER_TYPE.CLICKED_CHART) {
-      this.secondChartContext.clearRect(0, 0, w, h);
-      CanvasDrawHelper.drawClickedChart(this.secondChartContext, model);
+      this.chartContext.clearRect(0, 0, w, h);
+      CanvasDrawHelper.draw(this.chartContext, model);
     } else {
-      this.gridContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
-      this.firstChartContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
-      CanvasDrawHelper.drawGrid(this.gridContext, model);
-      CanvasDrawHelper.drawChart(this.firstChartContext, model);
+      this.xAxisContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
+      this.yAxisContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
+      this.chartContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
+
+      CanvasDrawHelper.drawAxisX(this.xAxisContext, model);
+      CanvasDrawHelper.drawAxisY(this.yAxisContext, model);
+      CanvasDrawHelper.draw(this.chartContext, model);
     }
 
-    this.ctx.drawImage(this.gridCanvas, 0, 0);
-    this.ctx.drawImage(this.firstChartCanvas, 0, 0);
-    this.ctx.drawImage(this.secondChartCanvas, 0, 0);
+    this.ctx.drawImage(this.xAxisCanvas, 0, 0);
+    this.ctx.drawImage(this.yAxisCanvas, 0, 0);
+    this.ctx.drawImage(this.chartCanvas, 0, 0);
   }
 }
 
