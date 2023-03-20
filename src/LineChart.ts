@@ -12,8 +12,6 @@ import { MOUSE_EVENT, RENDER_TYPE } from './constants/event';
 import CHART_SETTINGS from './constants/chartSettings';
 import getPixelRatio from './utils/domain/getPixelRatio';
 
-import { debounce } from './utils/debounce';
-
 class LineChart {
   wrapper: HTMLElement;
   chartWidth: number;
@@ -64,13 +62,10 @@ class LineChart {
     });
 
     // 마우스 이동 이벤트 => crossHair -> X
-    this.wrapper.addEventListener(
-      'mousemove',
-      debounce((event: MouseEvent) => {
-        this.crosshair.findNearestPoint(event);
-        this.crosshair.render();
-      }, 100)
-    );
+    this.wrapper.addEventListener('mousemove', (event) => {
+      this.crosshair.findNearestPoint(event);
+      this.crosshair.render();
+    });
 
     // 마우스 휠 이벤트 => 전체
     this.wrapper.addEventListener('wheel', (event) => {
@@ -98,22 +93,33 @@ class LineChart {
     });
   };
 
-  #redrawChart = () => {
-    const points = this.controller.formatPoints(this.model.datas);
-    this.model.setPoints(points);
+  #redrawChart = (index?: number) => {
+    if (index !== undefined) {
+      const visibleDatas = this.model.filterVisibleDatas(index);
+      const visiblePoints = this.controller.formatPoints(visibleDatas);
+
+      this.model.datas[index].setPoints(visiblePoints);
+    }
+
     this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
   };
 
-  initData = (datum: Datum) => {
+  initData = (index: number, datas: Datum[]) => {
     this.#bindDefaultEvents();
 
-    this.model.addInitialData(datum);
+    this.model.datas[index].setDatas(datas);
     this.view.preRender(this.model);
   };
 
-  updateData = (datum: Datum) => {
-    this.model.addUpdateData(datum);
-    this.#redrawChart();
+  updateData = (index: number, datas: Datum[]) => {
+    this.model.datas[index].setDatas(datas);
+    this.model.updateRangeTime();
+    this.#redrawChart(index);
+  };
+
+  removePoint = (index: number, point: number) => {
+    // TODO
+    console.log(point);
   };
 
   changeSize = (width?: number, height?: number) => {

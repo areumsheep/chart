@@ -59,11 +59,9 @@ class LineChartView {
 
     this.axisHelper.drawAxis(xType, this.xAxisContext, model.options.xAxis);
     this.axisHelper.drawAxis(yType, this.yAxisContext, model.options.yAxis);
-    CanvasDrawHelper.draw(this.chartContext, model);
 
     this.ctx.drawImage(this.xAxisCanvas, 0, 0);
     this.ctx.drawImage(this.yAxisCanvas, 0, 0);
-    this.ctx.drawImage(this.chartCanvas, 0, 0);
   }
 
   render(type: RenderTypeKey, model: LineChartModel, ratio?: number) {
@@ -78,7 +76,7 @@ class LineChartView {
     this.ctx.clearRect(0, 0, w * dpr + HORIZONTAL, h * dpr + VERTICAL * 2);
 
     if (type === RENDER_TYPE.CLICKED_CHART) {
-      this.chartContext.clearRect(0, 0, w, h);
+      this.chartContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
       CanvasDrawHelper.draw(this.chartContext, model);
     } else {
       this.xAxisContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);

@@ -15,20 +15,39 @@ const lineChart = new LineChart($app, initialData);
 const randomPoint = () => {
   return {
     time: Date.now(),
-    value: Math.random() * initialData.yAxis.range.end,
+    value: Math.random() * 100,
   };
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const clickData = initialData.datasets[1].data;
+  const { refreshTime } = initialData;
+  const {
+    0: { data: realtimeData },
+    1: { data: clickData },
+  } = initialData.datasets;
 
-  lineChart.initData(randomPoint());
+  realtimeData.push(randomPoint());
+  lineChart.initData(0, realtimeData);
   lineChart.addEventListener('mousedown', (event) => {
     event.preventDefault();
 
     const isLeftClick = event.button === 0;
     const isRightClick = event.button === 2 || event.button === 3;
+
+    if (isLeftClick) {
+      //TODO 그래프 값 추가 이벤트
+    } else if (isRightClick) {
+      lineChart.removePoint(0, event.clientX);
+    }
   });
+
+  if (refreshTime) {
+    window.setInterval(() => {
+      realtimeData.push(randomPoint());
+
+      lineChart.updateData(0, realtimeData);
+    }, refreshTime);
+  }
 });
 
 $form.addEventListener('submit', (event) => {

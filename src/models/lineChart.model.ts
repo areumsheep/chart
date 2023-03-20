@@ -1,17 +1,19 @@
-import type { Datum } from '../types/Data';
-import type { ChartOptions, Point } from '../types/Chart';
+import type { ChartOptions } from '../types/Chart';
 
 import CHART_SETTINGS from '../constants/chartSettings';
 import { MOUSE_EVENT, type MouseEventKey } from '../constants/event';
-import { binarySearch } from '../utils/search';
+
+import Data from './data.model';
 
 class LineChartModel {
-  points: Point[] = [];
-  clickedPoints: Point[] = [];
-  datas: Datum[] = [];
+  datas: Data[] = [];
   options: ChartOptions;
 
   constructor(options: ChartOptions) {
+    for (let i = 0; i < options.datasets.length; i++) {
+      this.datas.push(new Data(options.datasets[i].data));
+    }
+
     this.options = {
       ...options,
       rect: {
@@ -23,22 +25,11 @@ class LineChartModel {
     };
   }
 
-  addInitialData = (datum: Datum) => {
-    this.datas.push(datum);
-  };
-  addUpdateData = (datum: Datum) => {
-    this.datas.push(datum);
-
+  updateRangeTime = () => {
     this.options.xAxis.range.start = Date.now() - 60 * 5 * 1000;
     this.options.xAxis.range.end = Date.now();
   };
-  addClickedPoint = (point: Point) => {
-    this.clickedPoints.push(point);
-  };
 
-  setPoints = (points: Point[]) => {
-    this.points = points;
-  };
   setWidth = (width: number) => {
     this.options.rect.w = width;
   };
@@ -64,16 +55,14 @@ class LineChartModel {
     this.options.yAxis.range.end = point;
   };
 
-  deleteClickedPoint = (index: number) => {
-    this.clickedPoints.splice(index, 1);
-  };
+  filterVisibleDatas = (index: number) => {
+    const { start } = this.options.xAxis.range;
+    const target = this.datas[index];
 
-  findNearestPointIndex = <T = Point>(
-    target: T[],
-    point: number,
-    property: keyof T
-  ) => {
-    return binarySearch<T>(target, point, property);
+    const visibleData = target.datas.filter(({ time }) => time > start);
+    target.setDatas(visibleData);
+
+    return visibleData;
   };
 }
 

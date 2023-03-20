@@ -4,16 +4,14 @@ import LineChartModel from '../models/lineChart.model';
 
 const drawChart = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {
   const { w, h } = model.options.rect;
-  const { points } = model;
+  const data = model.datas[0].points;
 
   ctx.save();
   const chart = new Path2D();
   chart.rect(CHART_SETTINGS.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
   ctx.clip(chart, 'evenodd');
 
-  ctx.beginPath();
-
-  points.map(({ x, y }, index) => {
+  data.map(({ x, y }, index) => {
     if (index === 0) {
       ctx.moveTo(x, y);
     }
@@ -31,14 +29,14 @@ const drawClickedChart = (
   model: LineChartModel
 ) => {
   const { w, h } = model.options.rect;
-  const { clickedPoints } = model;
+  const data = model.datas[1].points;
 
   const chart = new Path2D();
   chart.rect(CHART_SETTINGS.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
   ctx.clip(chart, 'evenodd');
   ctx.beginPath();
 
-  clickedPoints.map(({ x, y }, index) => {
+  data.map(({ x, y }, index) => {
     if (index === 0) {
       ctx.moveTo(x, y);
     }

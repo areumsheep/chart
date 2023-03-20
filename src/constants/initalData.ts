@@ -8,7 +8,7 @@ export const initialData: ChartOptions = {
     w: 700,
     h: 500,
   },
-  refreshTime: 5 * 100,
+  refreshTime: 5 * 1000,
   datasets: [
     {
       type: 'line',
