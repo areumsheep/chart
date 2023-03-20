@@ -25,6 +25,29 @@ class LineChartModel {
     };
   }
 
+  get axis() {
+    const { w, h } = this.options.rect;
+    const {
+      tick: xTick,
+      range: { start: xStart, end: xEnd },
+    } = this.options.xAxis;
+    const {
+      tick: yTick,
+      range: { start: yStart, end: yEnd },
+    } = this.options.yAxis;
+
+    return {
+      w,
+      h,
+      xTick,
+      xStart,
+      xEnd,
+      yTick,
+      yStart,
+      yEnd,
+    };
+  }
+
   updateRangeTime = () => {
     this.options.xAxis.range.start = Date.now() - 60 * 5 * 1000;
     this.options.xAxis.range.end = Date.now();

@@ -12,6 +12,11 @@ import { MOUSE_EVENT, RENDER_TYPE } from './constants/event';
 import CHART_SETTINGS from './constants/chartSettings';
 import getPixelRatio from './utils/domain/getPixelRatio';
 
+import {
+  formatXPointToData,
+  formatYPointToData,
+} from './utils/domain/formatPointToData';
+
 class LineChart {
   wrapper: HTMLElement;
   chartWidth: number;
@@ -117,9 +122,25 @@ class LineChart {
     this.#redrawChart(index);
   };
 
+  // TODO: 확장성을 위해 아래 함수를 뺄 수 없을까?
+  formatClickData = (xPoint: number, yPoint: number) => {
+    const { w, h, xTick, xStart, xEnd, yEnd, yTick } = this.model.axis;
+
+    const x = formatXPointToData(w, xStart, xEnd, xTick)(xPoint);
+    const y = formatYPointToData(h, yEnd, yTick)(yPoint);
+
+    return { x, y };
+  };
+
+  addPoint = (index: number, data: Datum) => {
+    this.model.datas[index].updateData(data);
+    this.#redrawChart(index);
+  };
+
   removePoint = (index: number, point: number) => {
-    // TODO
-    console.log(point);
+    const targetIndex = this.model.datas[index].findNearestXPointIndex(point);
+    this.model.datas[index].removePoint(targetIndex);
+    this.#redrawChart(index);
   };
 
   changeSize = (width?: number, height?: number) => {

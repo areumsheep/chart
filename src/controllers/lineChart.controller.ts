@@ -9,40 +9,27 @@ import { formatX, formatY } from '../utils/domain/formatDataToPoint';
 class LineChartController {
   view: LineChartView;
   model: LineChartModel;
+  xStart: number;
+  xEnd: number;
+  yEnd: number;
 
   constructor(view: LineChartView, model: LineChartModel) {
     this.view = view;
     this.model = model;
+    this.xStart = model.options.xAxis.range.start;
+    this.xEnd = model.options.xAxis.range.end;
+    this.yEnd = model.options.yAxis.range.end;
 
     this.view.setController(this);
   }
 
-  useFormatterX = (time: number) => {
-    const { w } = this.model.options.rect;
-    const {
-      tick,
-      range: { start, end },
-    } = this.model.options.xAxis;
-
-    return formatX(w, start, end, tick)(time);
-  };
-
-  useFormatterY = (value: number) => {
-    const { h } = this.model.options.rect;
-    const {
-      tick,
-      range: { end },
-    } = this.model.options.yAxis;
-
-    return formatY(h, end, tick)(value);
-  };
-
   formatPoints = (datas: Datum[]) => {
     const points: Point[] = [];
+    const { w, h, xTick, xStart, xEnd, yEnd, yTick } = this.model.axis;
 
     datas.map(({ time, value }) => {
-      const x = this.useFormatterX(time);
-      const y = this.useFormatterY(value);
+      const x = formatX(w, xStart, xEnd, xTick)(time);
+      const y = formatY(h, yEnd, yTick)(value);
 
       points.push({ x, y });
     });
@@ -50,10 +37,10 @@ class LineChartController {
     return points;
   };
 
-  findNearestClickedPoint = (point: number) => {
-    const nearestIndex = binarySearch(this.model.clickedPoints, point, 'x');
-    return nearestIndex;
-  };
+  // findNearestClickedPoint = (point: number) => {
+  //   const nearestIndex = binarySearch<Point>(this.model.points[1], point, 'x');
+  //   return nearestIndex;
+  // };
 }
 
 export default LineChartController;

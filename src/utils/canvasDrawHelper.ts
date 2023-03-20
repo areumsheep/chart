@@ -31,6 +31,7 @@ const drawClickedChart = (
   const { w, h } = model.options.rect;
   const data = model.datas[1].points;
 
+  ctx.save();
   const chart = new Path2D();
   chart.rect(CHART_SETTINGS.PADDING.VERTICAL + 2, 0, w - 20, h - 1);
   ctx.clip(chart, 'evenodd');
@@ -51,6 +52,7 @@ const drawClickedChart = (
     ctx.fill(circle);
   });
   ctx.stroke();
+  ctx.restore();
 };
 
 const draw = (ctx: CanvasRenderingContext2D, model: LineChartModel) => {

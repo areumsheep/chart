@@ -29,10 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const isLeftClick = event.button === 0;
     const isRightClick = event.button === 2 || event.button === 3;
 
+    console.log(isRightClick);
+
     if (isLeftClick) {
-      //TODO 그래프 값 추가 이벤트
+      const { x, y } = lineChart.formatClickData(event.clientX, event.clientY);
+      lineChart.addPoint(1, { time: x, value: y });
     } else if (isRightClick) {
-      lineChart.removePoint(0, event.clientX);
+      lineChart.removePoint(1, event.clientX);
     }
   });
 

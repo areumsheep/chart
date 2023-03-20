@@ -36,6 +36,15 @@ class Data {
     const index = binarySearch<Point>(this.#points, point, 'x');
     return this.#points[index];
   };
+  findNearestXPointIndex = (point: number) => {
+    return binarySearch<Point>(this.#points, point, 'x');
+  };
+
+  // 제거하기
+  removePoint = (index: number) => {
+    this.#points.splice(index, 1);
+    this.#datas.splice(index, 1);
+  };
 }
 
 export default Data;
