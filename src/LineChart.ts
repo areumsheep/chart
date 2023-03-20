@@ -104,15 +104,15 @@ class LineChart {
     this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
   };
 
-  initData = (index: number, datas: Datum[]) => {
+  initData = (index: number, data: Datum) => {
     this.#bindDefaultEvents();
 
-    this.model.datas[index].setDatas(datas);
+    this.model.datas[index].updateData(data);
     this.view.preRender(this.model);
   };
 
-  updateData = (index: number, datas: Datum[]) => {
-    this.model.datas[index].setDatas(datas);
+  updateData = (index: number, data: Datum) => {
+    this.model.datas[index].updateData(data);
     this.model.updateRangeTime();
     this.#redrawChart(index);
   };

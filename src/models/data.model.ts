@@ -18,6 +18,7 @@ class Data {
     return this.#datas;
   }
 
+  // 덮어쓰기
   setPoints(points: Point[]) {
     this.#points = points;
   }
@@ -25,6 +26,12 @@ class Data {
     this.#datas = datas;
   }
 
+  // 추가하기
+  updateData(data: Datum) {
+    this.#datas.push(data);
+  }
+
+  // 탐색하기
   findNearestXPoint = (point: number) => {
     const index = binarySearch<Point>(this.#points, point, 'x');
     return this.#points[index];

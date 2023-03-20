@@ -21,13 +21,8 @@ const randomPoint = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   const { refreshTime } = initialData;
-  const {
-    0: { data: realtimeData },
-    1: { data: clickData },
-  } = initialData.datasets;
 
-  realtimeData.push(randomPoint());
-  lineChart.initData(0, realtimeData);
+  lineChart.initData(0, randomPoint());
   lineChart.addEventListener('mousedown', (event) => {
     event.preventDefault();
 
@@ -43,9 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (refreshTime) {
     window.setInterval(() => {
-      realtimeData.push(randomPoint());
-
-      lineChart.updateData(0, realtimeData);
+      lineChart.updateData(0, randomPoint());
     }, refreshTime);
   }
 });
