@@ -1,4 +1,5 @@
 import { ChartOptions } from '../types/Chart';
+import COLOR from './color';
 
 export const initialData: ChartOptions = {
   rect: {
@@ -12,10 +13,12 @@ export const initialData: ChartOptions = {
     {
       type: 'line',
       data: [],
+      color: COLOR.blue,
     },
     {
       type: 'line',
-      handler: 'click',
+      data: [],
+      color: COLOR.orange,
     },
   ],
   xAxis: {

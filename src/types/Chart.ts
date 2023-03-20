@@ -28,13 +28,17 @@ export interface Rect {
 
 export interface Dataset {
   type: keyof typeof DatasetType;
-  data?: any[];
+  data: any[];
   handler?: 'click';
+  color: string;
 }
 
+export type AxisKey = keyof typeof AxisType;
+
 export interface Axis {
-  type: keyof typeof AxisType;
+  type: AxisKey;
   format?: string;
+  gap?: number;
   tick: number;
   range: AxisRange;
 }

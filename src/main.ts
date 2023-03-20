@@ -20,18 +20,20 @@ const randomPoint = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  lineChart.initData(randomPoint());
+  const clickData = initialData.datasets[1].data;
 
-  const { refreshTime } = initialData;
-  if (refreshTime) {
-    window.setInterval(() => {
-      lineChart.updateData(randomPoint());
-    }, refreshTime);
-  }
+  lineChart.initData(randomPoint());
+  lineChart.addEventListener('mousedown', (event) => {
+    event.preventDefault();
+
+    const isLeftClick = event.button === 0;
+    const isRightClick = event.button === 2 || event.button === 3;
+  });
 });
 
 $form.addEventListener('submit', (event) => {
   event.preventDefault();
+
   const width = $widthInput.value;
   const height = $heightInput.value;
 

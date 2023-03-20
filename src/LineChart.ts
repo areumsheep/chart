@@ -55,19 +55,7 @@ class LineChart {
     this.crosshair = new CrossHair(crosshairCanvas, this.model);
   }
 
-  initData = (datum: Datum) => {
-    this.bindEvents();
-
-    this.model.addInitialData(datum);
-    this.view.preRender(this.model);
-  };
-
-  updateData = (datum: Datum) => {
-    this.model.addUpdateData(datum);
-    this.redrawChart();
-  };
-
-  bindEvents = () => {
+  #bindDefaultEvents = () => {
     // 마우스 이동 이벤트 => crossHair -> X
     this.wrapper.addEventListener('mousemove', (event) => {
       this.crosshair.findNearestPoint(event);
@@ -78,32 +66,12 @@ class LineChart {
       event.preventDefault();
     });
 
-    // 마우스 왼쪽, 오른쪽 이벤트 => clickedChart
-    this.wrapper.addEventListener('mousedown', (event) => {
-      event.preventDefault();
-      const isLeftClick = event.button === 0;
-      const isRightClick = event.button === 2 || event.button === 3;
-
-      if (isLeftClick) {
-        this.model.addClickedPoint({ x: event.clientX, y: event.clientY });
-      }
-      if (isRightClick) {
-        const index = this.model.findNearestPointIndex(
-          this.model.clickedPoints,
-          event.clientX,
-          'x'
-        );
-        this.model.deleteClickedPoint(index);
-      }
-      this.view.render(RENDER_TYPE.CLICKED_CHART, this.model);
-    });
-
     // 마우스 휠 이벤트 => 전체
     this.wrapper.addEventListener('wheel', (event) => {
       this.model.setAxisY(
         event.deltaY > 0 ? MOUSE_EVENT.ZOOM_OUT : MOUSE_EVENT.ZOOM_IN
       );
-      this.redrawChart();
+      this.#redrawChart();
     });
 
     // 화면 비율 (반응형) 이벤트 => 전체
@@ -122,6 +90,33 @@ class LineChart {
 
       this.changeSize(targetWidth, targetHeight);
     });
+  };
+
+  #redrawChart = () => {
+    const points = this.controller.formatPoints(this.model.datas);
+    this.model.setPoints(points);
+    this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
+  };
+
+  initData = (datum: Datum) => {
+    this.#bindDefaultEvents();
+
+    this.model.addInitialData(datum);
+    this.view.preRender(this.model);
+  };
+
+  updateData = (datum: Datum) => {
+    this.model.addUpdateData(datum);
+    this.#redrawChart();
+  };
+
+  addEventListener = <K extends keyof WindowEventMap>(
+    type: K,
+    callback: (ev: WindowEventMap[K]) => any
+  ) => {
+    this.wrapper.addEventListener(type, (event) =>
+      callback(event as WindowEventMap[K])
+    );
   };
 
   changeSize = (width?: number, height?: number) => {
@@ -151,13 +146,7 @@ class LineChart {
     }
 
     this.crosshairCanvas.getContext('2d')?.scale(dpr, dpr);
-    this.redrawChart();
-  };
-
-  redrawChart = () => {
-    const points = this.controller.formatPoints(this.model.datas);
-    this.model.setPoints(points);
-    this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
+    this.#redrawChart();
   };
 }
 
