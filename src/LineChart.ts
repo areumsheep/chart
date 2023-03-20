@@ -12,6 +12,8 @@ import { MOUSE_EVENT, RENDER_TYPE } from './constants/event';
 import CHART_SETTINGS from './constants/chartSettings';
 import getPixelRatio from './utils/domain/getPixelRatio';
 
+import { debounce } from './utils/debounce';
+
 class LineChart {
   wrapper: HTMLElement;
   chartWidth: number;
@@ -56,15 +58,19 @@ class LineChart {
   }
 
   #bindDefaultEvents = () => {
-    // 마우스 이동 이벤트 => crossHair -> X
-    this.wrapper.addEventListener('mousemove', (event) => {
-      this.crosshair.findNearestPoint(event);
-      this.crosshair.render();
-    });
     // 마우스 오른쪽 클릭(메뉴 모음) 이벤트 => X
     this.wrapper.addEventListener('contextmenu', (event) => {
       event.preventDefault();
     });
+
+    // 마우스 이동 이벤트 => crossHair -> X
+    this.wrapper.addEventListener(
+      'mousemove',
+      debounce((event: MouseEvent) => {
+        this.crosshair.findNearestPoint(event);
+        this.crosshair.render();
+      }, 100)
+    );
 
     // 마우스 휠 이벤트 => 전체
     this.wrapper.addEventListener('wheel', (event) => {
@@ -110,15 +116,6 @@ class LineChart {
     this.#redrawChart();
   };
 
-  addEventListener = <K extends keyof WindowEventMap>(
-    type: K,
-    callback: (ev: WindowEventMap[K]) => any
-  ) => {
-    this.wrapper.addEventListener(type, (event) =>
-      callback(event as WindowEventMap[K])
-    );
-  };
-
   changeSize = (width?: number, height?: number) => {
     const dpr = this.chartDPR;
 
@@ -147,6 +144,15 @@ class LineChart {
 
     this.crosshairCanvas.getContext('2d')?.scale(dpr, dpr);
     this.#redrawChart();
+  };
+
+  addEventListener = <K extends keyof WindowEventMap>(
+    type: K,
+    callback: (ev: WindowEventMap[K]) => any
+  ) => {
+    this.wrapper.addEventListener(type, (event) =>
+      callback(event as WindowEventMap[K])
+    );
   };
 }
 
