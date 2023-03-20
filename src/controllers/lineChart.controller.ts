@@ -1,6 +1,5 @@
 import LineChartView from '../views/lineChart.view';
 import LineChartModel from '../models/lineChart.model';
-import CHART_SETTINGS from '../constants/chartSettings';
 import type { Datum } from '../types/Data';
 import type { Point } from '../types/Chart';
 
@@ -23,7 +22,7 @@ class LineChartController {
     const {
       tick,
       range: { start, end },
-    } = this.model.options.axisX;
+    } = this.model.options.xAxis;
 
     return formatX(w, start, end, tick)(time);
   };
@@ -33,7 +32,7 @@ class LineChartController {
     const {
       tick,
       range: { end },
-    } = this.model.options.axisY;
+    } = this.model.options.yAxis;
 
     return formatY(h, end, tick)(value);
   };
