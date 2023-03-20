@@ -7,6 +7,7 @@ import getPixelRatio from '../utils/domain/getPixelRatio';
 
 import CHART_SETTINGS from '../constants/chartSettings';
 import { RENDER_TYPE, type RenderTypeKey } from '../constants/event';
+import AxisHelper from '../renderers/drawAxis';
 
 class LineChartView {
   canvas: HTMLCanvasElement;
@@ -14,6 +15,8 @@ class LineChartView {
   canvasWidth: number;
   canvasHeight: number;
   controller?: LineChartController;
+
+  axisHelper?: AxisHelper;
 
   xAxisCanvas: HTMLCanvasElement;
   xAxisContext: CanvasRenderingContext2D;
@@ -46,8 +49,16 @@ class LineChartView {
   };
 
   preRender(model: LineChartModel) {
-    CanvasDrawHelper.drawAxisX(this.xAxisContext, model);
-    CanvasDrawHelper.drawAxisY(this.yAxisContext, model);
+    const rect = model.options.rect;
+    const {
+      xAxis: { type: xType },
+      yAxis: { type: yType },
+    } = model.options;
+
+    this.axisHelper = new AxisHelper(rect);
+
+    this.axisHelper.drawAxis(xType, this.xAxisContext, model.options.xAxis);
+    this.axisHelper.drawAxis(yType, this.yAxisContext, model.options.yAxis);
     CanvasDrawHelper.draw(this.chartContext, model);
 
     this.ctx.drawImage(this.xAxisCanvas, 0, 0);
@@ -58,6 +69,10 @@ class LineChartView {
   render(type: RenderTypeKey, model: LineChartModel, ratio?: number) {
     const dpr = ratio || getPixelRatio();
     const { w, h } = model.options.rect;
+    const {
+      xAxis: { type: xType },
+      yAxis: { type: yType },
+    } = model.options;
     const { HORIZONTAL, VERTICAL } = CHART_SETTINGS.PADDING;
 
     this.ctx.clearRect(0, 0, w * dpr + HORIZONTAL, h * dpr + VERTICAL * 2);
@@ -70,8 +85,8 @@ class LineChartView {
       this.yAxisContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
       this.chartContext.clearRect(0, 0, w + HORIZONTAL, h + VERTICAL);
 
-      CanvasDrawHelper.drawAxisX(this.xAxisContext, model);
-      CanvasDrawHelper.drawAxisY(this.yAxisContext, model);
+      this.axisHelper?.drawAxis(xType, this.xAxisContext, model.options.xAxis);
+      this.axisHelper?.drawAxis(yType, this.yAxisContext, model.options.yAxis);
       CanvasDrawHelper.draw(this.chartContext, model);
     }
 
