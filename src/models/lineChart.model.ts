@@ -11,8 +11,8 @@ class LineChartModel {
 
   constructor(options: ChartOptions) {
     for (let i = 0; i < options.datasets.length; i++) {
-      const { data, color } = options.datasets[i];
-      this.datas.push(new Data(data, color));
+      const { data, color, marker } = options.datasets[i];
+      this.datas.push(new Data(data, color, marker));
     }
 
     this.options = {
@@ -51,7 +51,7 @@ class LineChartModel {
 
   updateRangeTime = () => {
     this.options.xAxis.range.start = Date.now() - 60 * 5 * 1000;
-    this.options.xAxis.range.end = Date.now();
+    this.options.xAxis.range.end = Date.now() + 5000;
   };
 
   setWidth = (width: number) => {
@@ -83,7 +83,7 @@ class LineChartModel {
     const { start } = this.options.xAxis.range;
     const target = this.datas[index];
 
-    const visibleData = target.datas.filter(({ time }) => time > start);
+    const visibleData = target.datas?.filter(({ time }) => time > start);
     target.setDatas(visibleData);
 
     return visibleData;

@@ -19,6 +19,10 @@ export const initialData: ChartOptions = {
       type: 'line',
       data: [],
       color: COLOR.orange,
+      marker: {
+        type: 'circle',
+        color: COLOR.darkorange,
+      },
     },
   ],
   xAxis: {

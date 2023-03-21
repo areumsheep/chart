@@ -1,7 +1,5 @@
-import CHART_SETTINGS from '../constants/chartSettings';
-import COLOR from '../constants/color';
 import LineChartModel from '../models/lineChart.model';
-import { Point, Rect } from '../types/Chart';
+import type { Marker, Point, Rect } from '../types/Chart';
 
 class LineChartHelper {
   #x: number;
@@ -28,20 +26,40 @@ class LineChartHelper {
   #drawChart = (
     ctx: CanvasRenderingContext2D,
     points: Point[],
-    lineColor: string
+    lineColor: string,
+    markerStyle?: Marker
   ) => {
     ctx.save();
 
-    ctx.beginPath();
+    if (points.length <= 0) return;
+
+    // path 만들기
+    const path = new Path2D();
     points.map(({ x, y }, index) => {
       if (index === 0) {
-        ctx.moveTo(x, y);
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
       }
-      ctx.strokeStyle = lineColor;
-      ctx.lineWidth = 2;
-      ctx.lineTo(x, y);
     });
-    ctx.stroke();
+
+    // line 그리기
+    ctx.beginPath();
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 2;
+    ctx.stroke(path);
+
+    // marker 그리기
+    if (markerStyle !== undefined) {
+      points.map(({ x, y }) => {
+        const circle = new Path2D();
+        circle.arc(x, y, 4, 0, 2 * Math.PI);
+
+        ctx.fillStyle = markerStyle.color;
+        ctx.fill(circle);
+      });
+    }
+
     ctx.restore();
   };
 
@@ -49,8 +67,8 @@ class LineChartHelper {
     this.#drawClip(ctx, 'evenodd');
     const { datas } = model;
 
-    for (const { points, lineColor } of datas) {
-      this.#drawChart(ctx, points, lineColor);
+    for (const { points, lineColor, markerStyle } of datas) {
+      this.#drawChart(ctx, points, lineColor, markerStyle);
     }
   };
 }

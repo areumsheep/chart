@@ -1,17 +1,19 @@
 import COLOR from '../constants/color';
-import { Point } from '../types/Chart';
+import { Marker, Point } from '../types/Chart';
 import { Datum } from '../types/Data';
 
 import { binarySearch } from '../utils/search';
 
 class Data {
   lineColor: string;
+  markerStyle?: Marker;
   #points: Point[] = [];
   #datas: Datum[] = [];
 
-  constructor(datas: Datum[], lineColor?: string) {
+  constructor(datas: Datum[], lineColor?: string, markerStyle?: Marker) {
     this.lineColor = lineColor || COLOR.darkgray;
     this.#datas = datas;
+    this.markerStyle = markerStyle;
   }
 
   get points() {

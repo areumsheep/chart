@@ -1,3 +1,5 @@
+import { SeriesMarkerShape } from '../renderers/drawMarker';
+
 // 상수
 export const DatasetType = {
   line: 'line',
@@ -29,18 +31,17 @@ export interface Rect {
 export interface Dataset {
   type: keyof typeof DatasetType;
   data: any[];
-  handler?: 'click';
   color: string;
+  marker?: Marker;
 }
 
 export type AxisKey = keyof typeof AxisType;
 
 export interface Axis {
   type: AxisKey;
-  format?: string;
-  gap?: number;
   tick: number;
   range: AxisRange;
+  format?: string;
 }
 
 export interface AxisRange {
@@ -49,6 +50,12 @@ export interface AxisRange {
   min?: number;
   max?: number;
 }
+
+export interface Marker {
+  type: SeriesMarkerShape;
+  color: string;
+}
+
 export interface Point {
   x: number;
   y: number;
