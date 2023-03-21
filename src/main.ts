@@ -1,6 +1,7 @@
 import LineChart from './LineChart';
 import { initialData } from './constants/initalData';
 import { $ } from './utils/dom';
+import { ChartOptions } from './types/Chart';
 
 const $app = $<HTMLDivElement>('#app');
 const $form = $<HTMLFormElement>('#resize-form');
@@ -10,7 +11,7 @@ const $heightInput = $<HTMLInputElement>('#height-input');
 $widthInput.value = `${initialData.rect.w}`;
 $heightInput.value = `${initialData.rect.h}`;
 
-const lineChart = new LineChart($app, initialData);
+const lineChart = new LineChart($app, initialData as ChartOptions);
 
 const randomPoint = () => {
   return {

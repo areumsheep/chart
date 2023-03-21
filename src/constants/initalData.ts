@@ -1,7 +1,6 @@
-import { ChartOptions } from '../types/Chart';
 import COLOR from './color';
 
-export const initialData: ChartOptions = {
+export const initialData = {
   rect: {
     x: 0,
     y: 0,

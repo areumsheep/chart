@@ -1,17 +1,33 @@
 {
   "name": "realtime-vanilla-chart",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "type": "module",
+  "description": "Simple HTML5 charts using the canvas element.",
+  "keywords": [
+    "canvas",
+    "realtime",
+    "graph",
+    "chart",
+    "responsive"
+  ],
+  "homepage": "https://github.com/areumsheep/chart",
+  "bugs": "https://github.com/areumsheep/chart/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/areumsheep/chart.git"
+  },
+  "author": "Yang Areum <areumsheep@gmail.com> (https://blog.areumsheep.vercel.app/)",
   "main": "dist/LineChart.js",
   "scripts": {
     "dev": "vite",
+    "prepack": "yarn build",
     "build": "yarn build:tsc",
     "build:tsc": "yarn tsc"
   },
   "exports": {
     ".": {
-      "import": "./dist/LineChart.js",
-      "types": "./dist/LineChart.d.ts"
+      "types": "./dist/LineChart.d.ts",
+      "import": "./dist/LineChart.js"
     }
   },
   "devDependencies": {

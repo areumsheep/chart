@@ -227,3 +227,5 @@ class LineChart {
 }
 
 export default LineChart;
+
+(window as any).LineChart = LineChart;
