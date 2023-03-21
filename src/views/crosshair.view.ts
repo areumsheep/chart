@@ -49,9 +49,9 @@ class CrossHair {
   #drawCrossHair = (ctx: CanvasRenderingContext2D, { x, y, w, h }: Rect) => {
     ctx.clearRect(0, 0, w, h);
 
+    drawCircle(ctx, x, y, 5);
     setLineStyle(ctx, LineStyle.LargeDashed);
     drawVerticalLine(ctx, x, CHART_SETTINGS.PADDING.HORIZONTAL, h);
-    drawCircle(ctx, x, y, 5);
   };
 }
 

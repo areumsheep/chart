@@ -49,7 +49,10 @@ class LineChart {
     const displayCanvas = createCanvasElement(w, h, 1);
     const crosshairCanvas = createCanvasElement(w, h);
     this.displayCanvas = displayCanvas;
+    this.displayCanvas.style.zIndex = '1';
+
     this.crosshairCanvas = crosshairCanvas;
+    this.crosshairCanvas.style.zIndex = '2';
 
     this.wrapper.insertAdjacentElement('afterbegin', displayCanvas);
     this.wrapper.insertAdjacentElement('afterbegin', crosshairCanvas);
