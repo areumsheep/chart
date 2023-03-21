@@ -1,14 +1,21 @@
 {
-  "name": "chart",
-  "private": true,
-  "version": "0.0.0",
+  "name": "realtime-vanilla-chart",
+  "version": "0.1.0",
   "type": "module",
+  "main": "dist/LineChart.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "yarn build:tsc",
+    "build:tsc": "yarn tsc"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/LineChart.js",
+      "types": "./dist/LineChart.d.ts"
+    }
   },
   "devDependencies": {
+    "@types/node": "^18.15.5",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
     "eslint": "^8.35.0",
@@ -16,5 +23,6 @@
     "prettier": "2.8.4",
     "typescript": "^4.9.3",
     "vite": "^4.1.0"
-  }
+  },
+  "license": "MIT"
 }
