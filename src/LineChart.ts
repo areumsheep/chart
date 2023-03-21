@@ -18,6 +18,8 @@ import {
 } from './utils/domain/formatPointToData';
 
 class LineChart {
+  isAnimate = false;
+
   wrapper: HTMLElement;
   chartWidth: number;
   chartHeight: number;
@@ -39,6 +41,7 @@ class LineChart {
     wrapper.style.height = `${h}px`;
     wrapper.style.position = 'relative';
     this.wrapper = wrapper;
+
     this.chartWidth = w;
     this.chartHeight = h;
     this.chartDPR = getPixelRatio();
@@ -58,6 +61,8 @@ class LineChart {
     this.controller = new LineChartController(this.view, this.model);
 
     this.crosshair = new CrossHair(crosshairCanvas, this.model);
+
+    this.drawChart();
   }
 
   #bindDefaultEvents = () => {
@@ -73,12 +78,17 @@ class LineChart {
     });
 
     // 마우스 휠 이벤트 => 전체
-    this.wrapper.addEventListener('wheel', (event) => {
-      this.model.setAxisY(
-        event.deltaY > 0 ? MOUSE_EVENT.ZOOM_OUT : MOUSE_EVENT.ZOOM_IN
-      );
-      this.#redrawChart();
-    });
+    this.wrapper.addEventListener(
+      'wheel',
+      (event) => {
+        this.model.setAxisY(
+          event.deltaY > 0 ? MOUSE_EVENT.ZOOM_OUT : MOUSE_EVENT.ZOOM_IN
+        );
+        this.#formatVisibleData();
+        this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
+      },
+      { passive: true }
+    );
 
     // 화면 비율 (반응형) 이벤트 => 전체
     window.addEventListener('resize', () => {
@@ -98,15 +108,42 @@ class LineChart {
     });
   };
 
-  #redrawChart = (index?: number) => {
-    if (index !== undefined) {
-      const visibleDatas = this.model.filterVisibleDatas(index);
+  #setAnimation = () => {
+    this.isAnimate = true;
+    this.drawChart();
+  };
+
+  #formatVisibleParticalData = (index: number) => {
+    const visibleDatas = this.model.filterVisibleDatas(index);
+    const visiblePoints = this.controller.formatPoints(visibleDatas);
+
+    this.model.datas[index].setPoints(visiblePoints);
+  };
+
+  #formatVisibleData = () => {
+    const { datas } = this.model;
+
+    for (let i = 0; i < datas.length; i++) {
+      const visibleDatas = this.model.filterVisibleDatas(i);
       const visiblePoints = this.controller.formatPoints(visibleDatas);
 
-      this.model.datas[index].setPoints(visiblePoints);
+      this.model.datas[i].setPoints(visiblePoints);
     }
+  };
 
-    this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
+  drawChart = () => {
+    let requestId;
+    if (this.isAnimate) {
+      this.#formatVisibleData();
+      this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
+      this.isAnimate = false;
+      requestId = requestAnimationFrame(this.drawChart);
+    } else {
+      if (requestId) {
+        cancelAnimationFrame(requestId);
+        requestId = undefined;
+      }
+    }
   };
 
   initData = (index: number, data: Datum) => {
@@ -119,7 +156,7 @@ class LineChart {
   updateData = (index: number, data: Datum) => {
     this.model.datas[index].updateData(data);
     this.model.updateRangeTime();
-    this.#redrawChart(index);
+    this.#setAnimation();
   };
 
   // TODO: 확장성을 위해 아래 함수를 뺄 수 없을까?
@@ -134,13 +171,15 @@ class LineChart {
 
   addPoint = (index: number, data: Datum) => {
     this.model.datas[index].updateData(data);
-    this.#redrawChart(index);
+    this.#formatVisibleParticalData(index);
+    this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
   };
 
   removePoint = (index: number, point: number) => {
     const targetIndex = this.model.datas[index].findNearestXPointIndex(point);
     this.model.datas[index].removePoint(targetIndex);
-    this.#redrawChart(index);
+    this.#formatVisibleParticalData(index);
+    this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
   };
 
   changeSize = (width?: number, height?: number) => {
@@ -170,7 +209,8 @@ class LineChart {
     }
 
     this.crosshairCanvas.getContext('2d')?.scale(dpr, dpr);
-    this.#redrawChart();
+    this.#formatVisibleData();
+    this.view.render(RENDER_TYPE.ALL, this.model, this.chartDPR);
   };
 
   addEventListener = <K extends keyof WindowEventMap>(

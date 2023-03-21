@@ -3,7 +3,6 @@ import LineChartModel from '../models/lineChart.model';
 import type { Datum } from '../types/Data';
 import type { Point } from '../types/Chart';
 
-import { binarySearch } from '../utils/search';
 import { formatX, formatY } from '../utils/domain/formatDataToPoint';
 
 class LineChartController {
@@ -36,11 +35,6 @@ class LineChartController {
 
     return points;
   };
-
-  // findNearestClickedPoint = (point: number) => {
-  //   const nearestIndex = binarySearch<Point>(this.model.points[1], point, 'x');
-  //   return nearestIndex;
-  // };
 }
 
 export default LineChartController;

@@ -51,7 +51,7 @@ class LineChartModel {
 
   updateRangeTime = () => {
     this.options.xAxis.range.start = Date.now() - 60 * 5 * 1000;
-    this.options.xAxis.range.end = Date.now() + 5000;
+    this.options.xAxis.range.end = Date.now() - 2000;
   };
 
   setWidth = (width: number) => {
