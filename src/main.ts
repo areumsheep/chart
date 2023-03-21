@@ -29,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const isLeftClick = event.button === 0;
     const isRightClick = event.button === 2 || event.button === 3;
 
-    console.log(isRightClick);
-
     if (isLeftClick) {
       const { x, y } = lineChart.formatClickData(event.clientX, event.clientY);
       lineChart.addPoint(1, { time: x, value: y });

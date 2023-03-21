@@ -11,7 +11,8 @@ class LineChartModel {
 
   constructor(options: ChartOptions) {
     for (let i = 0; i < options.datasets.length; i++) {
-      this.datas.push(new Data(options.datasets[i].data));
+      const { data, color } = options.datasets[i];
+      this.datas.push(new Data(data, color));
     }
 
     this.options = {

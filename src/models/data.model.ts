@@ -1,13 +1,16 @@
+import COLOR from '../constants/color';
 import { Point } from '../types/Chart';
 import { Datum } from '../types/Data';
 
 import { binarySearch } from '../utils/search';
 
 class Data {
+  lineColor: string;
   #points: Point[] = [];
   #datas: Datum[] = [];
 
-  constructor(datas: Datum[]) {
+  constructor(datas: Datum[], lineColor?: string) {
+    this.lineColor = lineColor || COLOR.darkgray;
     this.#datas = datas;
   }
 
